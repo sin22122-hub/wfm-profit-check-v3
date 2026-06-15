@@ -130,7 +130,7 @@ export default function AssessmentForm({ questions, onSubmit }) {
         </aside>
 
         <section className="form-shell">
-          <p className="eyebrow">WFM 美業獲利健檢</p>
+          <p className="eyebrow">PFM 美業獲利健檢</p>
           <h1>{current.title}</h1>
           <p>{current.description}</p>
 
