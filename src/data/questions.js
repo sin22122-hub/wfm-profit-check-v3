@@ -6,11 +6,17 @@ export const questions = [
     fields: [
       { key: 'storeName', label: '店家名稱', type: 'text', required: true },
       { key: 'contactName', label: '聯絡人姓名', type: 'text', required: true },
-      { key: 'phone', label: '聯絡電話', type: 'text' },
-      { key: 'instagram', label: 'Instagram 帳號', type: 'text' },
-      { key: 'storeType', label: '店面類型', type: 'select', options: ['個人工作室', '單店', '複合式', '多店經營', '其他'], required: true },
+      { key: 'phone', label: '聯絡電話', type: 'text', required: true },
+      { key: 'instagram', label: 'Instagram帳號', type: 'text' },
+      {
+        key: 'storeType',
+        label: '店面類型',
+        type: 'checkbox',
+        options: ['美甲', '美睫', '美容', '紋繡', '美髮', 'SPA/按摩', '複合式', '其他'],
+        required: true
+      },
       { key: 'branchCount', label: '分店數', type: 'number', defaultValue: 1 },
-      { key: 'month', label: '本次填寫月份', type: 'month' }
+      { key: 'month', label: '本次填寫月份', type: 'text', placeholder: '例如：2026/06' }
     ]
   },
   {
@@ -42,12 +48,12 @@ export const questions = [
       { key: 'rent', label: '租金', type: 'number' },
       { key: 'utilities', label: '水電費', type: 'number' },
       { key: 'internetPhone', label: '網路電話費', type: 'number' },
-      { key: 'posFee', label: 'POS 系統費用', type: 'number' },
+      { key: 'posFee', label: 'POS系統費用', type: 'number' },
       { key: 'cleaning', label: '清潔費', type: 'number' },
       { key: 'misc', label: '雜項支出', type: 'number' },
-      { key: 'metaAds', label: 'Meta 廣告', type: 'number' },
-      { key: 'googleAds', label: 'Google 廣告', type: 'number' },
-      { key: 'lineAds', label: 'LINE 廣告', type: 'number' },
+      { key: 'metaAds', label: 'Meta廣告', type: 'number' },
+      { key: 'googleAds', label: 'Google廣告', type: 'number' },
+      { key: 'lineAds', label: 'LINE廣告', type: 'number' },
       { key: 'kol', label: 'KOL／網紅合作', type: 'number' },
       { key: 'creative', label: '素材設計／拍攝', type: 'number' },
       { key: 'otherAds', label: '其他廣告支出', type: 'number' },
@@ -59,13 +65,55 @@ export const questions = [
     title: '數位經營',
     description: '請填寫目前社群與內容經營狀況。',
     fields: [
-      { key: 'socialActive', label: '目前是否有經營社群媒體？', type: 'select', options: ['有固定經營', '偶爾經營', '幾乎沒有'] },
-      { key: 'platforms', label: '目前主要經營哪些平台？', type: 'checkbox', options: ['Instagram', 'Facebook', 'Threads', 'TikTok', 'LINE官方帳號', '小紅書', '其他'] },
-      { key: 'weeklyPosts', label: '平均每週發文次數？', type: 'select', options: ['0篇', '1篇', '2~3篇', '3~4篇', '5篇以上'] },
-      { key: 'shortVideo', label: '目前是否有固定產出短影音？', type: 'select', options: ['每週都有', '偶爾有', '幾乎沒有'] },
-      { key: 'mainPain', label: '目前最大的經營困擾是什麼？', type: 'text' },
-      { key: 'growthGoal', label: '目前最希望改善哪些經營成果？', type: 'text' },
-      { key: 'learningPreference', label: '您比較偏好的學習方式？', type: 'text' }
+      {
+        key: 'socialActive',
+        label: '目前是否有經營社群媒體？',
+        type: 'select',
+        options: ['有固定經營', '有經營但不穩定', '偶爾發文', '幾乎沒有經營', '完全沒有經營'],
+        required: true
+      },
+      {
+        key: 'platforms',
+        label: '目前主要經營哪些平台？',
+        type: 'checkbox',
+        options: ['Instagram', 'Facebook', 'Threads', 'TikTok', 'LINE官方帳號', '小紅書', '其他']
+      },
+      {
+        key: 'weeklyPosts',
+        label: '平均每週發文次數？',
+        type: 'select',
+        options: ['0篇', '1~2篇', '3~4篇', '5篇以上'],
+        required: true
+      },
+      {
+        key: 'shortVideo',
+        label: '目前是否有固定產出短影音？',
+        type: 'select',
+        options: ['每週都有', '偶爾會拍', '很少拍', '完全沒有'],
+        required: true
+      },
+      {
+        key: 'mainPain',
+        label: '目前最大的經營困擾是什麼？',
+        type: 'checkbox',
+        options: ['回流率低', '流量不穩定', '不知道如何提升營收', '成本壓力大', '社群經營沒成效', '內容不知道怎麼做', '廣告投放沒效果', '團隊管理困難', '其他']
+      },
+      {
+        key: 'growthGoal',
+        label: '目前最希望改善哪些經營成果？',
+        type: 'checkbox',
+        maxSelect: 3,
+        hint: '請最多選擇3項',
+        options: ['穩定增加新客來源', '提高老客回流率', '提升客單價與成交率', '升整體營收', '降低獲客成本', '建立穩定曝光能力']
+      },
+      {
+        key: 'learningPreference',
+        label: '您比較偏好的學習方式？',
+        type: 'checkbox',
+        maxSelect: 3,
+        hint: '請最多選擇3項',
+        options: ['自己學習（課程）', '邊做邊學（陪跑）', '接給建議（一對一顧問）', '解診斷結果']
+      }
     ]
   },
   {
@@ -77,8 +125,18 @@ export const questions = [
       { key: 'newCustomers', label: '本月新客數', type: 'number', required: true },
       { key: 'returningCustomers', label: '本月回流客數', type: 'number', required: true },
       { key: 'referralCustomers', label: '本月介紹客數', type: 'number' },
-      { key: 'customerChannels', label: '客主要來自哪些管道？', type: 'text' },
-      { key: 'stableSource', label: '目前最穩定的新客來源是？', type: 'text' }
+      {
+        key: 'customerChannels',
+        label: '客主要來自哪些管道？',
+        type: 'checkbox',
+        options: ['Instagram', 'Facebook', 'Threads', 'TikTok', 'LINE官方帳號', 'Google搜尋/地圖', '廣告投放', '老客介紹', '路過/商圈', '其他']
+      },
+      {
+        key: 'stableSource',
+        label: '您認為目前最穩定的新客來源是？',
+        type: 'checkbox',
+        options: ['Instagram', 'Facebook', 'Threads', 'TikTok', 'LINE官方帳號', 'Google搜尋/地圖', '廣告投放', '老客介紹', '路過/商圈', '其他']
+      }
     ]
   },
   {
@@ -90,7 +148,12 @@ export const questions = [
       { key: 'bookings', label: '本月預約數', type: 'number' },
       { key: 'visits', label: '本月到店數', type: 'number' },
       { key: 'deals', label: '本月成交數', type: 'number' },
-      { key: 'adTracking', label: '是否有追蹤廣告成效？', type: 'select', options: ['有固定追蹤', '偶爾看', '沒有追蹤'] }
+      {
+        key: 'adTracking',
+        label: '是否有追蹤廣告成效？',
+        type: 'select',
+        options: ['有固定追蹤', '部分追蹤', '偶爾看', '沒有追蹤']
+      }
     ]
   }
 ];
