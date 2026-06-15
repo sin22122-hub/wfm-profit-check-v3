@@ -62,7 +62,7 @@ export default function ResultDashboard({ result, onRestart }) {
 
           <section className="cta-panel">
             <h2>不要再靠感覺經營，開始用數據看懂你的店。</h2>
-            <button className="btn">預約 WFM 一對一獲利診斷</button>
+            <button className="btn">預約 PFM 一對一獲利診斷</button>
             <button className="btn secondary" onClick={onRestart}>重新健檢</button>
           </section>
         </>
