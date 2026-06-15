@@ -54,7 +54,7 @@ export default function HomePage({ onStart }) {
 
       <section className="final-cta">
         <h2>不要再靠感覺經營，開始用數據看懂你的店。</h2>
-        <button className="btn" onClick={onStart}>立即開始 WFM 美業獲利健檢</button>
+        <button className="btn" onClick={onStart}>立即開始 PFM 美業獲利健檢</button>
       </section>
     </main>
   );
