@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { formatCurrency, formatPercent, formatNumber } from '../utils/formatters.js';
 
-const MetricCard = ({ label, value }) => (
-  <div className="metric-card">
+const MetricCard = ({ label, value, tone }) => (
+  <div className={`metric-card ${tone ? `tone-${tone}` : ''}`}>
     <span>{label}</span>
     <strong>{value}</strong>
   </div>
 );
 
-const Section = ({ title, children }) => (
-  <section className="report-section">
+const Section = ({ title, children, className = '' }) => (
+  <section className={`report-section ${className}`}>
     <div className="section-title-row"><h2>{title}</h2></div>
     {children}
   </section>
@@ -25,6 +25,13 @@ const ListBlock = ({ items = [] }) => (
     ))}
   </div>
 );
+
+const statusTone = (value) => {
+  if (['優秀', '健康', '良好', '極高', '高'].includes(value)) return 'good';
+  if (['普通', '穩定', '中', '待改善'].includes(value)) return 'warn';
+  if (['需改善', '偏高', '偏弱', '低', '薄弱'].includes(value)) return 'risk';
+  return '';
+};
 
 export default function ResultDashboard({ result, onRestart }) {
   const [unlocked, setUnlocked] = useState(false);
@@ -80,39 +87,46 @@ export default function ResultDashboard({ result, onRestart }) {
         </div>
       </Section>
 
+      <Section title="第三區｜成本健康度">
+        <div className="metric-grid six">
+          <MetricCard label="毛利率評估" value={costHealth.grossMarginStatus} tone={statusTone(costHealth.grossMarginStatus)} />
+          <MetricCard label="淨利率評估" value={costHealth.netMarginStatus} tone={statusTone(costHealth.netMarginStatus)} />
+          <MetricCard label="人事成本率評估" value={costHealth.hrCostStatus} tone={statusTone(costHealth.hrCostStatus)} />
+          <MetricCard label="租金率評估" value={costHealth.rentStatus} tone={statusTone(costHealth.rentStatus)} />
+          <MetricCard label="廣告率評估" value={costHealth.adCostStatus} tone={statusTone(costHealth.adCostStatus)} />
+          <MetricCard label="回流率評估" value={costHealth.returningStatus} tone={statusTone(costHealth.returningStatus)} />
+        </div>
+      </Section>
+
       <div className="report-two-col">
         <Section title="第六區｜你的三大問題"><ListBlock items={problems} /></Section>
         <Section title="第七區｜你的三大優勢"><ListBlock items={strengths} /></Section>
       </div>
 
-      <Section title="第八區｜建議改善順序"><ListBlock items={actions} /></Section>
+      <Section title="第十區｜店家成長階段判定">
+        <div className="metric-grid two">
+          <MetricCard label="店家成長階段" value={growthStage.stage} />
+          <MetricCard label="成長階段綜合分數" value={formatNumber(growthStage.score)} />
+        </div>
+        <p className="report-copy">{growthStage.description}</p>
+      </Section>
 
       {!unlocked && (
         <section className="unlock-cta">
-          <h2>完整報告已產生</h2>
-          <p>解鎖後可查看成本健康度、客戶經營力、流量內容能力、轉換漏斗、總結診斷與獲利成長機會分析。</p>
+          <h2>完整顧問版報告已產生</h2>
+          <p>解鎖後可查看客戶經營能力、流量內容能力、轉換漏斗、改善順序、總結診斷、獲利成長機會與下一步行動建議。</p>
           <button className="btn" onClick={() => setUnlocked(true)}>解鎖完整報告</button>
         </section>
       )}
 
       {unlocked && (
         <>
-          <Section title="第三區｜成本健康度">
-            <div className="metric-grid five">
-              <MetricCard label="毛利率評估" value={costHealth.grossMarginStatus} />
-              <MetricCard label="人事成本率評估" value={costHealth.hrCostStatus} />
-              <MetricCard label="租金率評估" value={costHealth.rentStatus} />
-              <MetricCard label="廣告率評估" value={costHealth.adCostStatus} />
-              <MetricCard label="回流率評估" value={costHealth.returningStatus} />
-            </div>
-          </Section>
-
           <Section title="第四區｜客戶經營能力">
             <div className="metric-grid four">
               <MetricCard label="新客率" value={formatPercent(customerHealth.newCustomerRate)} />
               <MetricCard label="介紹客比例" value={formatPercent(customerHealth.referralRate)} />
-              <MetricCard label="客戶經營力" value={formatNumber(customerHealth.customerScore)} />
-              <MetricCard label="客戶經營力評級" value={customerHealth.customerGrade} />
+              <MetricCard label="客戶經營力" value={`${formatNumber(customerHealth.customerScore)} / 10`} />
+              <MetricCard label="客戶經營力評級" value={customerHealth.customerGrade} tone={statusTone(customerHealth.customerGrade)} />
             </div>
           </Section>
 
@@ -121,7 +135,7 @@ export default function ResultDashboard({ result, onRestart }) {
               <MetricCard label="社群經營度" value={formatNumber(digitalHealth.socialScore)} />
               <MetricCard label="內容執行力" value={formatNumber(digitalHealth.contentScore)} />
               <MetricCard label="數位成熟度" value={formatNumber(digitalHealth.digitalScore)} />
-              <MetricCard label="數位成熟度評級" value={digitalHealth.digitalGrade} />
+              <MetricCard label="數位成熟度評級" value={digitalHealth.digitalGrade} tone={statusTone(digitalHealth.digitalGrade)} />
             </div>
           </Section>
 
@@ -136,20 +150,16 @@ export default function ResultDashboard({ result, onRestart }) {
             </div>
           </Section>
 
+          <Section title="第八區｜建議改善順序">
+            <ListBlock items={actions} />
+          </Section>
+
           <Section title="第九區｜總結診斷">
             <div className="narrative-grid">
               <div><h3>目前狀態</h3><p>{summary.currentStatus}</p></div>
               <div><h3>成長機會</h3><p>{summary.growthOpportunity}</p></div>
               <div><h3>建議方向</h3><p>{summary.direction}</p></div>
             </div>
-          </Section>
-
-          <Section title="第十區｜店家成長階段判定">
-            <div className="metric-grid two">
-              <MetricCard label="店家成長階段" value={growthStage.stage} />
-              <MetricCard label="成長階段綜合分數" value={formatNumber(growthStage.score)} />
-            </div>
-            <p className="report-copy">{growthStage.description}</p>
           </Section>
 
           <Section title="第十一區｜獲利成長機會分析">
@@ -159,8 +169,8 @@ export default function ResultDashboard({ result, onRestart }) {
               <MetricCard label="可轉化營收" value={formatCurrency(growthOpportunity.convertibleRevenue)} />
               <MetricCard label="可提升獲利" value={formatCurrency(growthOpportunity.profitPotential)} />
             </div>
-            <div className="metric-grid two">
-              <MetricCard label="成長潛力評級" value={growthOpportunity.level} />
+            <div className="metric-grid two opportunity-extra">
+              <MetricCard label="成長潛力評級" value={growthOpportunity.level} tone={statusTone(growthOpportunity.level)} />
               <MetricCard label="顧問解讀" value={growthOpportunity.consultantComment} />
             </div>
           </Section>

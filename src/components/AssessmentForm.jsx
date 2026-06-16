@@ -65,6 +65,24 @@ export default function AssessmentForm({ questions, onSubmit }) {
       );
     }
 
+    if (field.type === 'radio') {
+      return (
+        <div className="checkbox-grid radio-grid">
+          {field.options.map((opt) => (
+            <label key={opt} className="check-item">
+              <input
+                type="radio"
+                name={field.key}
+                checked={value === opt}
+                onChange={() => updateValue(field.key, opt)}
+              />
+              {opt}
+            </label>
+          ))}
+        </div>
+      );
+    }
+
     if (field.type === 'checkbox') {
       const arr = Array.isArray(data[field.key]) ? data[field.key] : [];
       return (
@@ -138,6 +156,7 @@ export default function AssessmentForm({ questions, onSubmit }) {
             {current.fields.map((field) => (
               <label className="field" key={field.key}>
                 <span>{field.label}{field.required ? ' *' : ''}</span>
+                {field.hint && <small className="field-hint">{field.hint}</small>}
                 {renderField(field)}
               </label>
             ))}

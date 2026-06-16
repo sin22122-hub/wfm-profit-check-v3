@@ -18,8 +18,9 @@ export const questions = [
       {
         key: 'businessType',
         label: '經營型態',
-        type: 'select',
-        options: ['個人工作室', '小型單店', '多人店面', '多店／連鎖'],
+        type: 'radio',
+        hint: '此選項將影響獲利健康度、成本評估與成長階段判定，請依實際經營模式選擇。',
+        options: ['個人工作室', '小型店面', '多人店面', '多店/連鎖'],
         required: true
       },
       { key: 'month', label: '本次填寫月份', type: 'text', placeholder: '例如：2026/06' }
@@ -110,7 +111,7 @@ export const questions = [
         type: 'checkbox',
         maxSelect: 3,
         hint: '請最多選擇3項',
-        options: ['穩定增加新客來源', '提高老客回流率', '提升客單價與成交率', '升整體營收', '降低獲客成本', '建立穩定曝光能力']
+        options: ['穩定增加新客來源', '提高老客回流率', '提升客單價與成交率', '提升整體營收', '降低獲客成本', '建立穩定曝光能力']
       },
       {
         key: 'learningPreference',
@@ -118,7 +119,7 @@ export const questions = [
         type: 'checkbox',
         maxSelect: 3,
         hint: '請最多選擇3項',
-        options: ['自己學習（課程）', '邊做邊學（陪跑）', '直接給建議（一對一顧問）', '解診斷結果']
+        options: ['自己學習（課程）', '邊做邊學（陪跑）', '直接給建議（一對一顧問）', '解讀診斷結果']
       }
     ]
   },
@@ -133,7 +134,7 @@ export const questions = [
       { key: 'referralCustomers', label: '本月介紹客數', type: 'number' },
       {
         key: 'customerChannels',
-        label: '客主要來自哪些管道？',
+        label: '客戶主要來自哪些管道？',
         type: 'checkbox',
         options: ['Instagram', 'Facebook', 'Threads', 'TikTok', 'LINE官方帳號', 'Google搜尋/地圖', '廣告投放', '老客介紹', '路過/商圈', '其他']
       },
