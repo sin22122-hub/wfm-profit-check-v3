@@ -15,7 +15,8 @@ export const questions = [
         options: ['美甲', '美睫', '美容', '紋繡', '美髮', 'SPA/按摩', '複合式', '其他'],
         required: true
       },
-      { key: 'branchCount', label: '分店數', type: 'number', defaultValue: 1 },
+      { key: 'businessType',  label: '經營型態',  type: 'select',  required: true,  options: ['個人工作室', '小型單店', '多人店面',  '多店／連鎖'
+  ] },
       { key: 'month', label: '本次填寫月份', type: 'text', placeholder: '例如：2026/06' }
     ]
   },
