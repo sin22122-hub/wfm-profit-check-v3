@@ -1,25 +1,11 @@
-# PFM 美業獲利健檢 V2
+# PFM 美業獲利健檢 V1.1
 
-## 使用方式
+本版更新：
+- 結果頁改為產品式免費診斷頁，不再直接堆疊 Client_Report 12區。
+- 新增「店家成長藍圖」Email 解鎖區。
+- 完整藍圖改為六章式呈現：獲利結構、客戶結構、流量內容、轉換漏斗、顧問診斷、90天改善路徑。
+- 新增隱形成本提醒：金流手續費、本月費用、年度累積估算。
+- 客戶經營力維持 0～10 分制。
+- 成長階段分數改為：毛利率25%、淨利率25%、客戶經營力35%、數位成熟度15%。
 
-```bash
-npm install
-npm run dev
-```
-
-## Vercel 設定
-
-- Framework: Vite
-- Build command: npm run build
-- Output directory: dist
-
-## 專案結構
-
-- `src/main.jsx`：React 入口
-- `src/App.jsx`：頁面切換
-- `src/components/HomePage.jsx`：首頁
-- `src/components/AssessmentForm.jsx`：六步驟問卷
-- `src/components/ResultDashboard.jsx`：診斷結果頁
-- `src/data/questions.js`：題庫
-- `src/utils/calculations.js`：前端診斷公式
-- `src/utils/sheetApi.js`：預留 Google Sheet API 串接
+上傳方式：整包覆蓋 GitHub 專案後重新部署。

@@ -14,8 +14,10 @@ function normalizeBusinessType(value) {
   const map = {
     '個人工作室': '個人工作室',
     '小型店面': '小型店面',
+    '小型單店': '小型店面',
     '多人店面': '多人店面',
     '多店/連鎖': '多店/連鎖',
+    '多店／連鎖': '多店/連鎖',
   };
   return map[value] || '小型店面';
 }
@@ -53,6 +55,14 @@ function returningStatus(value) {
   return '需改善';
 }
 
+function paymentFeeStatus(value) {
+  if (value <= 0.02) return '優秀';
+  if (value <= 0.03) return '健康';
+  if (value <= 0.04) return '普通';
+  if (value <= 0.05) return '偏高';
+  return '危險';
+}
+
 function customerScore10(type, newRate, returningRate, referralRate) {
   const config = {
     '個人工作室': { rTarget: 0.6, nTarget: 0.2, fTarget: 0.15, rW: 60, nW: 25, fW: 15 },
@@ -78,36 +88,42 @@ function gradeCustomer(score) {
 
 function socialScore(data) {
   const active = {
-    '有固定經營': 40,
-    '有經營但不穩定': 30,
-    '偶爾發文': 20,
-    '幾乎沒有經營': 10,
+    '每天更新': 100,
+    '每週穩定更新': 80,
+    '每月更新': 60,
+    '偶爾想到才更新': 30,
+    '完全沒有': 0,
+    '有固定經營': 80,
+    '有經營但不穩定': 60,
+    '偶爾發文': 30,
+    '幾乎沒有經營': 20,
     '完全沒有經營': 0,
   }[data.socialActive] ?? 0;
-  const platforms = Math.min(asArray(data.platforms).length * 10, 30);
+
   const posts = {
-    '0篇': 0,
-    '1~2篇': 15,
-    '3~4篇': 25,
-    '5篇以上': 30,
+    '5篇以上': 100,
+    '3~4篇': 80,
+    '1~2篇': 60,
+    '0篇': 20,
   }[data.weeklyPosts] ?? 0;
-  return Math.min(active + platforms + posts, 100);
+
+  return Math.round(active * 0.5 + posts * 0.5);
 }
 
 function contentScore(data) {
   const posts = {
-    '0篇': 0,
-    '1~2篇': 30,
-    '3~4篇': 45,
-    '5篇以上': 55,
+    '5篇以上': 100,
+    '3~4篇': 80,
+    '1~2篇': 60,
+    '0篇': 20,
   }[data.weeklyPosts] ?? 0;
   const video = {
-    '每週都有': 45,
-    '偶爾會拍': 30,
-    '很少拍': 15,
+    '每週都有': 100,
+    '偶爾會拍': 70,
+    '很少拍': 40,
     '完全沒有': 0,
   }[data.shortVideo] ?? 0;
-  return Math.min(posts + video, 100);
+  return Math.round(posts * 0.4 + video * 0.6);
 }
 
 function digitalGrade(score) {
@@ -142,6 +158,8 @@ function actionFor(problem, index) {
     '廣告成本偏高': '檢視廣告投放效益',
     '租金壓力偏高': '檢視固定成本壓力',
     '人事成本偏高': '優化人力配置',
+    '會員與回流系統待建立': '建立會員回購與回訪機制',
+    '流量系統待建立': '建立穩定自然流量與內容節奏',
   };
   return map[problem] || '建立下一階段成長目標';
 }
@@ -155,6 +173,8 @@ function consultantComment(problem, strength) {
     '租金壓力偏高': '目前租金成本占比較高，建議評估坪效、人員產能與客單價是否足以支撐現有店面成本。',
     '人事成本偏高': '目前人事支出比例偏高，建議檢視人員產值、排班效率與服務產能配置。',
     '廣告成本偏高': '目前廣告投入較高，建議重新檢視投放策略、CPA與ROAS。',
+    '會員與回流系統待建立': '目前核心獲利結構雖無明顯風險，但會員、回購與回訪機制仍可加強，建議建立穩定的客戶經營流程。',
+    '流量系統待建立': '目前核心獲利結構雖無明顯風險，但自然流量與內容節奏仍有優化空間，建議建立可持續的曝光與內容系統。',
   };
   if (problem === '目前無明顯問題') return `目前整體經營狀況穩定，建議持續放大「${strength}」，建立下一階段成長目標。`;
   return map[problem] || '目前整體經營狀況穩定，建議持續放大現有優勢。';
@@ -234,7 +254,15 @@ export function calculateDiagnosis(data) {
     { label: '介紹客來源穩定', score: referralRate >= 0.20 ? referralRate * 100 : 0 },
   ];
 
-  const problems = topLabels(problemScores, '目前無明顯問題');
+  let problems = topLabels(problemScores, '目前無明顯問題');
+  const hasCoreProblem = problemScores.some((item) => item.score > 0);
+  if (!hasCoreProblem) {
+    const replacementProblems = [];
+    if (customerScore < 7) replacementProblems.push('會員與回流系統待建立');
+    if (digital < 70) replacementProblems.push('流量系統待建立');
+    problems = [0, 1, 2].map((index) => replacementProblems[index] || '目前無明顯問題');
+  }
+
   const strengths = topLabels(strengthScores, '目前無明顯優勢');
   const actions = problems.map((problem, index) => actionFor(problem, index));
 
@@ -253,15 +281,14 @@ export function calculateDiagnosis(data) {
     : `建議優先從「${actions[0]}」開始，並同步觀察「${actions[1]}」。`;
 
   const stageScore = Math.round(
-    (Math.min(grossMargin / 0.7, 1) * 20) +
-    (Math.min(Math.max(netMargin, 0) / 0.2, 1) * 20) +
-    (Math.min(returningRate / 0.4, 1) * 20) +
-    (Math.min(customerScore / 10, 1) * 20) +
-    (Math.min(digital / 100, 1) * 20)
+    (Math.min(grossMargin / grossStrongTarget, 1) * 25) +
+    (Math.min(Math.max(netMargin, 0) / netStrongTarget, 1) * 25) +
+    (Math.min(customerScore / 10, 1) * 35) +
+    (Math.min(digital / 100, 1) * 15)
   );
 
-  const stage = stageScore >= 80 ? '擴張期' : stageScore >= 60 ? '成長期' : stageScore >= 45 ? '穩定期' : '求生期';
-  const growthLevel = customerScore >= 8.5 && returningRate >= 0.4 && digital >= 80 ? '極高' : customerScore >= 7 && returningRate >= 0.3 && digital >= 60 ? '高' : customerScore >= 5 && digital >= 40 ? '中' : '低';
+  const stage = stageScore >= 85 ? '擴張期' : stageScore >= 65 ? '成長期' : stageScore >= 40 ? '穩定期' : '求生期';
+  const growthLevel = customerScore >= 8.5 && returningRate >= 0.4 && digital >= 80 && netMargin >= 0 ? '極高' : customerScore >= 7 && returningRate >= 0.3 && digital >= 60 ? '高' : customerScore >= 5 && digital >= 40 ? '中' : '低';
   const returningGap = Math.max(0, 0.8 - returningRate);
   const convertibleRevenue = revenue * returningGap;
   const healthyNetMargin = netLowTarget;
@@ -281,6 +308,7 @@ export function calculateDiagnosis(data) {
       hrCostStatus: costStatusHigh(hrRate, hrTarget),
       rentStatus: costStatusHigh(rentRate, rentTarget),
       adCostStatus: costStatusHigh(adRate, adTarget),
+      paymentFeeStatus: paymentFeeStatus(paymentFeeRate),
       returningStatus: returningStatus(returningRate),
     },
     customerHealth: {
@@ -325,6 +353,12 @@ export function calculateDiagnosis(data) {
       profitPotential,
       level: growthLevel,
       consultantComment: consultantComment(problems[0], strengths[0]),
+    },
+    hiddenCost: {
+      monthlyFee: paymentFee,
+      paymentFeeRate,
+      annualFee: paymentFee * 12,
+      message: `本月金流手續費 ${formatSafe(paymentFee)} 元（${(paymentFeeRate * 100).toFixed(2)}%），若維持目前規模，一年約流失 ${formatSafe(paymentFee * 12)} 元的利潤，建議同步檢視金流結構與收款模式。`,
     },
     cta: {
       nextStep: problems[0] === '目前無明顯問題'

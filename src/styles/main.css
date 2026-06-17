@@ -1,3 +1,4 @@
+@import './pfm-v11-result.css';
 :root {
   --cream: #F8F4EC;
   --green: #31463D;
@@ -478,4 +479,3 @@ select {
     padding: 0 18px;
   }
 }
-@import './pfm-v11-result.css';

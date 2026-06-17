@@ -1,40 +1,58 @@
 import React, { useState } from 'react';
 import { formatCurrency, formatPercent, formatNumber } from '../utils/formatters.js';
 
-const MetricCard = ({ label, value, tone }) => (
-  <div className={`metric-card ${tone ? `tone-${tone}` : ''}`}>
+const statusTone = (value) => {
+  if (['優秀', '健康', '良好', '極高', '高', '成長期', '擴張期'].includes(value)) return 'good';
+  if (['普通', '穩定', '中', '待改善', '穩定期'].includes(value)) return 'warn';
+  if (['需改善', '偏高', '危險', '偏弱', '低', '薄弱', '求生期'].includes(value)) return 'risk';
+  return '';
+};
+
+const MetricCard = ({ label, value, sub, tone, large = false }) => (
+  <div className={`pfm-card metric-card-v12 ${tone ? `tone-${tone}` : ''} ${large ? 'large' : ''}`}>
     <span>{label}</span>
     <strong>{value}</strong>
+    {sub && <p>{sub}</p>}
   </div>
 );
 
-const Section = ({ title, children, className = '' }) => (
-  <section className={`report-section ${className}`}>
-    <div className="section-title-row"><h2>{title}</h2></div>
+const Section = ({ eyebrow, title, intro, children, className = '' }) => (
+  <section className={`pfm-section ${className}`}>
+    {eyebrow && <p className="pfm-eyebrow">{eyebrow}</p>}
+    <div className="pfm-section-head">
+      <h2>{title}</h2>
+      {intro && <p>{intro}</p>}
+    </div>
     {children}
   </section>
 );
 
-const ListBlock = ({ items = [] }) => (
-  <div className="rank-list">
+const RankCards = ({ items = [], type = 'problem' }) => (
+  <div className={`rank-card-grid ${type}`}>
     {items.map((item, index) => (
-      <div className="rank-item" key={`${item}-${index}`}>
-        <span>{index + 1}</span>
+      <div className="pfm-card rank-card-v12" key={`${type}-${item}-${index}`}>
+        <div className="rank-number">{index + 1}</div>
         <p>{item}</p>
       </div>
     ))}
   </div>
 );
 
-const statusTone = (value) => {
-  if (['優秀', '健康', '良好', '極高', '高'].includes(value)) return 'good';
-  if (['普通', '穩定', '中', '待改善'].includes(value)) return 'warn';
-  if (['需改善', '偏高', '偏弱', '低', '薄弱'].includes(value)) return 'risk';
-  return '';
-};
+const StepCards = ({ items = [] }) => (
+  <div className="step-grid-v12">
+    {items.map((item, index) => (
+      <div className="pfm-card step-card-v12" key={`${item}-${index}`}>
+        <span>STEP {index + 1}</span>
+        <strong>{item}</strong>
+      </div>
+    ))}
+  </div>
+);
 
 export default function ResultDashboard({ result, onRestart }) {
   const [unlocked, setUnlocked] = useState(false);
+  const [email, setEmail] = useState('');
+
   if (!result) return null;
 
   const {
@@ -50,79 +68,121 @@ export default function ResultDashboard({ result, onRestart }) {
     summary,
     growthStage,
     growthOpportunity,
+    hiddenCost,
     cta,
   } = result;
 
+  const unlockBlueprint = () => {
+    setUnlocked(true);
+    setTimeout(() => {
+      document.getElementById('growth-blueprint')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+  };
+
   return (
-    <main className="result-page">
-      <section className="result-hero">
-        <div>
-          <p className="eyebrow">PFM 美業獲利健檢報告</p>
-          <h1>{basic.storeName || '你的店家'} 獲利成長診斷</h1>
-          <p>依據營收、成本、客戶經營與數位能力，產出目前最需要優先檢視的獲利問題與成長機會。</p>
+    <main className="pfm-result-page">
+      <section className="pfm-result-hero">
+        <div className="hero-copy-v12">
+          <p className="pfm-eyebrow">PFM 美業獲利健檢結果</p>
+          <h1>{basic.storeName || '你的店家'}｜經營診斷結果</h1>
+          <p>{growthStage.description}</p>
+          <div className="hero-tags-v12">
+            <span>{basic.businessType}</span>
+            <span>{basic.storeType}</span>
+            <span>{basic.month || '本期資料'}</span>
+          </div>
         </div>
-        <div className="stage-card">
+        <div className="stage-panel-v12">
           <span>店家成長階段</span>
           <strong>{growthStage.stage}</strong>
-          <p>{growthStage.description}</p>
+          <div className="score-ring-v12">{formatNumber(growthStage.score)}</div>
+          <p>綜合分數</p>
         </div>
       </section>
 
-      <Section title="第一區｜店家基本資料">
-        <div className="metric-grid four">
-          <MetricCard label="店家名稱" value={basic.storeName || '-'} />
-          <MetricCard label="店面類型" value={basic.storeType || '-'} />
-          <MetricCard label="經營型態" value={basic.businessType || '-'} />
-          <MetricCard label="填寫月份" value={basic.month || '-'} />
+      <Section title="四大核心指標" intro="先看最直接影響獲利與經營穩定度的四個指標。">
+        <div className="metric-grid-v12 four">
+          <MetricCard label="毛利率" value={formatPercent(profitHealth.grossMargin)} sub={costHealth.grossMarginStatus} tone={statusTone(costHealth.grossMarginStatus)} />
+          <MetricCard label="淨利率" value={formatPercent(profitHealth.netMargin)} sub={costHealth.netMarginStatus} tone={statusTone(costHealth.netMarginStatus)} />
+          <MetricCard label="回流率" value={formatPercent(profitHealth.returningRate)} sub={costHealth.returningStatus} tone={statusTone(costHealth.returningStatus)} />
+          <MetricCard label="客單價" value={formatCurrency(profitHealth.averageTicket)} sub="平均每位客人貢獻" />
         </div>
       </Section>
 
-      <Section title="第二區｜獲利健康度">
-        <div className="metric-grid five">
-          <MetricCard label="本月營收" value={formatCurrency(profitHealth.revenue)} />
-          <MetricCard label="毛利率" value={formatPercent(profitHealth.grossMargin)} />
-          <MetricCard label="淨利率" value={formatPercent(profitHealth.netMargin)} />
-          <MetricCard label="回流率" value={formatPercent(profitHealth.returningRate)} />
-          <MetricCard label="客單價" value={formatCurrency(profitHealth.averageTicket)} />
-        </div>
-      </Section>
-
-      <Section title="第三區｜成本健康度">
-        <div className="metric-grid six">
-          <MetricCard label="毛利率評估" value={costHealth.grossMarginStatus} tone={statusTone(costHealth.grossMarginStatus)} />
-          <MetricCard label="淨利率評估" value={costHealth.netMarginStatus} tone={statusTone(costHealth.netMarginStatus)} />
-          <MetricCard label="人事成本率評估" value={costHealth.hrCostStatus} tone={statusTone(costHealth.hrCostStatus)} />
-          <MetricCard label="租金率評估" value={costHealth.rentStatus} tone={statusTone(costHealth.rentStatus)} />
-          <MetricCard label="廣告率評估" value={costHealth.adCostStatus} tone={statusTone(costHealth.adCostStatus)} />
-          <MetricCard label="回流率評估" value={costHealth.returningStatus} tone={statusTone(costHealth.returningStatus)} />
-        </div>
-      </Section>
-
-      <div className="report-two-col">
-        <Section title="第六區｜你的三大問題"><ListBlock items={problems} /></Section>
-        <Section title="第七區｜你的三大優勢"><ListBlock items={strengths} /></Section>
+      <div className="two-col-v12">
+        <Section title="目前最需要處理的三件事" intro="優先看會影響獲利、回流與成長速度的關鍵問題。">
+          <RankCards items={problems} type="problem" />
+        </Section>
+        <Section title="目前最值得放大的三個優勢" intro="不是只找問題，也要看見你已經做對的地方。">
+          <RankCards items={strengths} type="strength" />
+        </Section>
       </div>
 
-      <Section title="第十區｜店家成長階段判定">
-        <div className="metric-grid two">
-          <MetricCard label="店家成長階段" value={growthStage.stage} />
-          <MetricCard label="成長階段綜合分數" value={formatNumber(growthStage.score)} />
-        </div>
-        <p className="report-copy">{growthStage.description}</p>
+      <Section title="建議改善順序" intro="依照目前診斷結果，建議先從這三個方向開始。">
+        <StepCards items={actions} />
       </Section>
 
+      <Section title="獲利成長機會分析" intro="這裡不是承諾營收，而是協助你看見目前經營結構中可能被放大的空間。">
+        <div className="metric-grid-v12 four">
+          <MetricCard label="回流提升空間" value={formatPercent(growthOpportunity.returningGap)} />
+          <MetricCard label="可轉化營收" value={formatCurrency(growthOpportunity.convertibleRevenue)} />
+          <MetricCard label="可提升獲利" value={formatCurrency(growthOpportunity.profitPotential)} />
+          <MetricCard label="成長潛力評級" value={growthOpportunity.level} tone={statusTone(growthOpportunity.level)} />
+        </div>
+      </Section>
+
+      <section className="hidden-cost-card-v12">
+        <div>
+          <p className="pfm-eyebrow">你可能忽略的隱形成本</p>
+          <h2>金流手續費正在持續吃掉你的淨利</h2>
+          <p>{hiddenCost.message}</p>
+        </div>
+        <div className="hidden-cost-metrics-v12">
+          <MetricCard label="本月金流手續費" value={formatCurrency(hiddenCost.monthlyFee)} />
+          <MetricCard label="金流手續費率" value={formatPercent(hiddenCost.paymentFeeRate)} />
+          <MetricCard label="年度累積估算" value={formatCurrency(hiddenCost.annualFee)} />
+        </div>
+      </section>
+
       {!unlocked && (
-        <section className="unlock-cta">
-          <h2>完整顧問版報告已產生</h2>
-          <p>解鎖後可查看客戶經營能力、流量內容能力、轉換漏斗、改善順序、總結診斷、獲利成長機會與下一步行動建議。</p>
-          <button className="btn" onClick={() => setUnlocked(true)}>解鎖完整報告</button>
+        <section className="unlock-blueprint-v12">
+          <p className="pfm-eyebrow">免費解鎖</p>
+          <h2>店家成長藍圖已產生</h2>
+          <p>看懂結果只是開始。解鎖後可查看你的獲利結構、客戶結構、流量內容能力、成長瓶頸與顧問建議。</p>
+          <div className="email-unlock-row-v12">
+            <input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="輸入 Email 免費解鎖"
+            />
+            <button className="btn" onClick={unlockBlueprint}>免費解鎖店家成長藍圖</button>
+          </div>
         </section>
       )}
 
       {unlocked && (
-        <>
-          <Section title="第四區｜客戶經營能力">
-            <div className="metric-grid four">
+        <section id="growth-blueprint" className="blueprint-page-v12">
+          <div className="blueprint-hero-v12">
+            <p className="pfm-eyebrow">店家成長藍圖</p>
+            <h2>從「知道問題」進入「理解原因」</h2>
+            <p>以下內容將目前的健檢數據整理成顧問視角，協助你看見獲利、客戶、流量與下一步改善方向。</p>
+          </div>
+
+          <Section title="第一章｜獲利結構分析" intro="獲利不是只看營收，而是看毛利、淨利與成本是否能留下錢。">
+            <div className="metric-grid-v12 seven">
+              <MetricCard label="本月營收" value={formatCurrency(profitHealth.revenue)} />
+              <MetricCard label="毛利率" value={formatPercent(profitHealth.grossMargin)} sub={costHealth.grossMarginStatus} tone={statusTone(costHealth.grossMarginStatus)} />
+              <MetricCard label="淨利率" value={formatPercent(profitHealth.netMargin)} sub={costHealth.netMarginStatus} tone={statusTone(costHealth.netMarginStatus)} />
+              <MetricCard label="人事成本" value={costHealth.hrCostStatus} tone={statusTone(costHealth.hrCostStatus)} />
+              <MetricCard label="租金壓力" value={costHealth.rentStatus} tone={statusTone(costHealth.rentStatus)} />
+              <MetricCard label="廣告率" value={costHealth.adCostStatus} tone={statusTone(costHealth.adCostStatus)} />
+              <MetricCard label="金流手續費" value={costHealth.paymentFeeStatus} tone={statusTone(costHealth.paymentFeeStatus)} />
+            </div>
+          </Section>
+
+          <Section title="第二章｜客戶結構分析" intro="回流、新客與介紹客的比例，會決定你是靠穩定經營，還是一直追新客。">
+            <div className="metric-grid-v12 four">
               <MetricCard label="新客率" value={formatPercent(customerHealth.newCustomerRate)} />
               <MetricCard label="介紹客比例" value={formatPercent(customerHealth.referralRate)} />
               <MetricCard label="客戶經營力" value={`${formatNumber(customerHealth.customerScore)} / 10`} />
@@ -130,8 +190,8 @@ export default function ResultDashboard({ result, onRestart }) {
             </div>
           </Section>
 
-          <Section title="第五區｜流量與內容能力">
-            <div className="metric-grid four">
+          <Section title="第三章｜流量與內容能力" intro="PFM 不鼓勵盲目投廣告，而是先看目前是否具備自然流量與內容經營基礎。">
+            <div className="metric-grid-v12 four">
               <MetricCard label="社群經營度" value={formatNumber(digitalHealth.socialScore)} />
               <MetricCard label="內容執行力" value={formatNumber(digitalHealth.contentScore)} />
               <MetricCard label="數位成熟度" value={formatNumber(digitalHealth.digitalScore)} />
@@ -139,52 +199,36 @@ export default function ResultDashboard({ result, onRestart }) {
             </div>
           </Section>
 
-          <Section title="轉換漏斗與廣告效率">
-            <div className="metric-grid six">
-              <MetricCard label="金流手續費率" value={formatPercent(funnelHealth.paymentFeeRate)} />
+          <Section title="第四章｜轉換漏斗與廣告效率" intro="這裡用來看廣告與名單是否有效，不代表 PFM 鼓勵依賴廣告。">
+            <div className="metric-grid-v12 six">
               <MetricCard label="CPA" value={funnelHealth.cpaLabel} />
               <MetricCard label="ROAS" value={funnelHealth.roasLabel} />
               <MetricCard label="預約率" value={formatPercent(funnelHealth.bookingRate)} />
               <MetricCard label="到店率" value={formatPercent(funnelHealth.visitRate)} />
               <MetricCard label="成交率" value={formatPercent(funnelHealth.dealRate)} />
+              <MetricCard label="金流手續費率" value={formatPercent(funnelHealth.paymentFeeRate)} />
             </div>
           </Section>
 
-          <Section title="第八區｜建議改善順序">
-            <ListBlock items={actions} />
-          </Section>
-
-          <Section title="第九區｜總結診斷">
-            <div className="narrative-grid">
-              <div><h3>目前狀態</h3><p>{summary.currentStatus}</p></div>
-              <div><h3>成長機會</h3><p>{summary.growthOpportunity}</p></div>
-              <div><h3>建議方向</h3><p>{summary.direction}</p></div>
+          <Section title="第五章｜成長瓶頸與顧問診斷">
+            <div className="narrative-grid-v12">
+              <div className="pfm-card"><h3>目前狀態</h3><p>{summary.currentStatus}</p></div>
+              <div className="pfm-card"><h3>成長機會</h3><p>{summary.growthOpportunity}</p></div>
+              <div className="pfm-card"><h3>建議方向</h3><p>{summary.direction}</p></div>
             </div>
           </Section>
 
-          <Section title="第十一區｜獲利成長機會分析">
-            <div className="metric-grid four">
-              <MetricCard label="目前營收結構" value={`目前月營收 ${formatCurrency(growthOpportunity.revenue)}`} />
-              <MetricCard label="回流提升空間" value={formatPercent(growthOpportunity.returningGap)} />
-              <MetricCard label="可轉化營收" value={formatCurrency(growthOpportunity.convertibleRevenue)} />
-              <MetricCard label="可提升獲利" value={formatCurrency(growthOpportunity.profitPotential)} />
-            </div>
-            <div className="metric-grid two opportunity-extra">
-              <MetricCard label="成長潛力評級" value={growthOpportunity.level} tone={statusTone(growthOpportunity.level)} />
-              <MetricCard label="顧問解讀" value={growthOpportunity.consultantComment} />
-            </div>
-          </Section>
-
-          <Section title="第十二區｜下一步行動建議">
-            <div className="cta-box">
+          <Section title="第六章｜90天優先改善路徑">
+            <StepCards items={actions} />
+            <div className="cta-panel-v12">
               <p>{cta.nextStep}</p>
               <a className="btn" href={cta.bookingUrl || '#'} target="_blank" rel="noreferrer">{cta.bookingText || '預約 PFM 一對一診斷'}</a>
             </div>
           </Section>
-        </>
+        </section>
       )}
 
-      <div className="result-actions">
+      <div className="result-actions-v12">
         <button className="btn secondary" onClick={onRestart}>重新健檢</button>
       </div>
     </main>

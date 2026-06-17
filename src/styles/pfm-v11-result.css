@@ -1,6 +1,258 @@
-.result-page{width:min(1180px,calc(100% - 32px));margin:48px auto 80px}.result-hero,.report-section,.unlock-cta{background:rgba(255,255,255,.86);border:1px solid rgba(214,167,70,.28);border-radius:28px;padding:32px;margin-bottom:24px;box-shadow:0 20px 60px rgba(34,55,48,.08)}.result-hero{display:grid;grid-template-columns:1.4fr .8fr;gap:24px}.stage-card,.unlock-cta,.cta-box{background:#2f4f43;color:#fff}.stage-card{border-radius:24px;padding:28px}.stage-card span,.metric-card span,.eyebrow{color:#d6a746;font-size:.9rem}.stage-card strong{display:block;font-size:2.8rem;margin:12px 0}.section-title-row{display:flex;justify-content:space-between;margin-bottom:20px}.metric-grid{display:grid;gap:16px}.metric-grid.two{grid-template-columns:repeat(2,1fr)}.metric-grid.four{grid-template-columns:repeat(4,1fr)}.metric-grid.five{grid-template-columns:repeat(5,1fr)}.metric-grid.six{grid-template-columns:repeat(6,1fr)}.metric-card{background:#fff;border:1px solid rgba(214,167,70,.25);border-radius:20px;padding:18px}.metric-card strong{display:block;color:#17352e;font-size:1.45rem;margin-top:8px;word-break:break-word}.report-two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px}.rank-list{display:grid;gap:12px}.rank-item{display:grid;grid-template-columns:38px 1fr;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid rgba(34,55,48,.1)}.rank-item span{background:#fbf5ea;color:#d6a746;width:32px;height:32px;display:grid;place-items:center;border-radius:50%;font-weight:700}.rank-item p,.narrative-grid p,.report-copy,.cta-box p{margin:0;line-height:1.8}.unlock-cta,.cta-box{text-align:center}.narrative-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.narrative-grid>div{background:#fff;border-radius:20px;padding:20px;border:1px solid rgba(214,167,70,.18)}.result-actions{display:flex;justify-content:center;margin-top:24px}@media(max-width:900px){.result-hero,.report-two-col,.narrative-grid,.metric-grid.two,.metric-grid.four,.metric-grid.five,.metric-grid.six{grid-template-columns:1fr}.result-page{width:min(100% - 20px,680px);margin-top:24px}.result-hero,.report-section,.unlock-cta{padding:22px;border-radius:22px}}.metric-card.tone-good strong { color: #2f6f4e; }
-.metric-card.tone-warn strong { color: #b7791f; }
-.metric-card.tone-risk strong { color: #b23b3b; }
-.field-hint { display:block; margin: 6px 0 10px; color: #667085; line-height: 1.6; font-size: .92rem; }
-.radio-grid .check-item input { margin-right: 8px; }
-.opportunity-extra .metric-card:last-child strong { font-size: 1rem; line-height: 1.7; font-weight: 500; }
+.pfm-result-page {
+  width: min(1180px, calc(100% - 32px));
+  margin: 44px auto 80px;
+}
+
+.pfm-result-hero,
+.pfm-section,
+.hidden-cost-card-v12,
+.unlock-blueprint-v12,
+.blueprint-page-v12 {
+  border-radius: 30px;
+  border: 1px solid rgba(214, 167, 70, 0.26);
+  box-shadow: 0 22px 70px rgba(25, 49, 42, 0.10);
+}
+
+.pfm-result-hero {
+  display: grid;
+  grid-template-columns: 1.35fr 0.75fr;
+  gap: 24px;
+  padding: 34px;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, rgba(255,255,255,.94), rgba(251,245,234,.96));
+}
+
+.hero-copy-v12 h1,
+.pfm-section-head h2,
+.hidden-cost-card-v12 h2,
+.unlock-blueprint-v12 h2,
+.blueprint-hero-v12 h2 {
+  color: #17352e;
+  margin: 0;
+}
+
+.hero-copy-v12 p,
+.pfm-section-head p,
+.hidden-cost-card-v12 p,
+.unlock-blueprint-v12 p,
+.blueprint-hero-v12 p {
+  color: #5f6f68;
+  line-height: 1.8;
+}
+
+.pfm-eyebrow {
+  color: #d6a746 !important;
+  font-size: .88rem;
+  letter-spacing: .08em;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+}
+
+.hero-tags-v12 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.hero-tags-v12 span {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #fff;
+  color: #31594d;
+  border: 1px solid rgba(214, 167, 70, .28);
+  font-size: .92rem;
+}
+
+.stage-panel-v12 {
+  background: #2f4f43;
+  color: white;
+  border-radius: 26px;
+  padding: 28px;
+  display: grid;
+  align-content: center;
+  text-align: center;
+}
+
+.stage-panel-v12 span,
+.stage-panel-v12 p { color: rgba(255,255,255,.72); margin: 0; }
+.stage-panel-v12 strong { font-size: 2.8rem; margin: 10px 0 16px; }
+.score-ring-v12 {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 10px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #d6a746;
+  color: #17352e;
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.pfm-section {
+  background: rgba(255,255,255,.9);
+  padding: 30px;
+  margin-bottom: 24px;
+}
+
+.pfm-section-head {
+  margin-bottom: 22px;
+}
+
+.metric-grid-v12 {
+  display: grid;
+  gap: 16px;
+}
+.metric-grid-v12.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.metric-grid-v12.six { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.metric-grid-v12.seven { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+
+.two-col-v12 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.pfm-card {
+  background: #fff;
+  border: 1px solid rgba(214, 167, 70, .22);
+  border-radius: 22px;
+  padding: 20px;
+}
+
+.metric-card-v12 span {
+  display: block;
+  color: #d6a746;
+  font-size: .88rem;
+  margin-bottom: 8px;
+}
+.metric-card-v12 strong {
+  display: block;
+  color: #17352e;
+  font-size: 1.55rem;
+  line-height: 1.25;
+  word-break: break-word;
+}
+.metric-card-v12 p { margin: 8px 0 0; color: #66736d; line-height: 1.6; }
+.metric-card-v12.tone-good strong { color: #2f6f4e; }
+.metric-card-v12.tone-warn strong { color: #b7791f; }
+.metric-card-v12.tone-risk strong { color: #b23b3b; }
+
+.rank-card-grid,
+.step-grid-v12 {
+  display: grid;
+  gap: 14px;
+}
+.rank-card-v12 {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 14px;
+  align-items: center;
+}
+.rank-number {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  background: #fbf5ea;
+  color: #d6a746;
+}
+.rank-card-grid.problem .rank-number { background: #fff1f1; color: #b23b3b; }
+.rank-card-grid.strength .rank-number { background: #edf8f0; color: #2f6f4e; }
+.rank-card-v12 p { margin: 0; color: #17352e; font-weight: 800; line-height: 1.5; }
+
+.step-grid-v12 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.step-card-v12 span { color: #d6a746; font-weight: 900; font-size: .82rem; }
+.step-card-v12 strong { display: block; color: #17352e; margin-top: 10px; line-height: 1.5; }
+
+.hidden-cost-card-v12 {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 24px;
+  align-items: center;
+  background: #2f4f43;
+  padding: 32px;
+  margin-bottom: 24px;
+}
+.hidden-cost-card-v12 h2,
+.hidden-cost-card-v12 p { color: white; }
+.hidden-cost-metrics-v12 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.hidden-cost-metrics-v12 .pfm-card { background: rgba(255,255,255,.96); }
+
+.unlock-blueprint-v12 {
+  background: linear-gradient(135deg, #17352e, #2f4f43);
+  padding: 36px;
+  margin-bottom: 24px;
+  color: white;
+  text-align: center;
+}
+.unlock-blueprint-v12 h2,
+.unlock-blueprint-v12 p { color: white; }
+.email-unlock-row-v12 {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 22px;
+}
+.email-unlock-row-v12 input {
+  min-width: min(360px, 100%);
+  padding: 14px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.4);
+  font-size: 1rem;
+}
+
+.blueprint-page-v12 {
+  background: rgba(251, 245, 234, .72);
+  padding: 28px;
+  margin-bottom: 24px;
+}
+.blueprint-hero-v12 {
+  padding: 8px 8px 24px;
+}
+.narrative-grid-v12 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.narrative-grid-v12 h3 { color: #17352e; margin-top: 0; }
+.narrative-grid-v12 p { color: #5f6f68; line-height: 1.8; }
+.cta-panel-v12 {
+  margin-top: 18px;
+  padding: 24px;
+  text-align: center;
+  border-radius: 22px;
+  background: #2f4f43;
+  color: white;
+}
+.cta-panel-v12 p { margin-top: 0; line-height: 1.8; }
+.result-actions-v12 { display: flex; justify-content: center; margin-top: 24px; }
+
+@media (max-width: 980px) {
+  .pfm-result-hero,
+  .two-col-v12,
+  .hidden-cost-card-v12,
+  .narrative-grid-v12,
+  .metric-grid-v12.four,
+  .metric-grid-v12.six,
+  .metric-grid-v12.seven,
+  .step-grid-v12,
+  .hidden-cost-metrics-v12 {
+    grid-template-columns: 1fr;
+  }
+  .pfm-result-page { width: min(100% - 20px, 720px); margin-top: 24px; }
+  .pfm-result-hero,
+  .pfm-section,
+  .hidden-cost-card-v12,
+  .unlock-blueprint-v12,
+  .blueprint-page-v12 { padding: 22px; border-radius: 22px; }
+  .email-unlock-row-v12 { flex-direction: column; }
+}
