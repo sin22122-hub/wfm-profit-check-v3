@@ -5,7 +5,6 @@ import AssessmentForm from './components/AssessmentForm.jsx';
 import ResultDashboard from './components/ResultDashboard.jsx';
 
 import { questions } from './data/questions.js';
-import { calculateDiagnosis } from './utils/calculations.js';
 import { submitToGoogleForm } from './utils/googleFormApi.js';
 import { fetchDashboardData } from './utils/sheetApi.js';
 
