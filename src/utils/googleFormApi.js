@@ -67,42 +67,83 @@ const FIELD_MAP = {
   adTracking: 'entry.1895985700',
 };
 
-function appendInput(form, name, value) {
+function appendHiddenInput(form, name, value) {
   const input = document.createElement('input');
   input.type = 'hidden';
   input.name = name;
-  input.value = value ?? '';
+  input.value = String(value ?? '');
   form.appendChild(input);
 }
 
-export async function submitToGoogleForm(data) {
-  const body = new URLSearchParams();
+function normalizeValue(value) {
+  if (value === undefined || value === null) return '';
+  return String(value).trim();
+}
+
+export function buildGoogleFormPayload(data) {
+  const entries = [];
 
   Object.entries(FIELD_MAP).forEach(([key, entryId]) => {
     const value = data[key];
 
     if (Array.isArray(value)) {
-      value
-        .filter((item) => item !== undefined && item !== null && String(item).trim() !== '')
-        .forEach((item) => body.append(entryId, String(item)));
+      value.forEach((item) => {
+        const normalized = normalizeValue(item);
+        if (normalized !== '') entries.push([entryId, normalized]);
+      });
       return;
     }
 
-    if (value !== undefined && value !== null && String(value).trim() !== '') {
-      body.append(entryId, String(value));
-    }
+    const normalized = normalizeValue(value);
+    if (normalized !== '') entries.push([entryId, normalized]);
   });
 
-  // Google Forms does not return CORS-readable responses.
-  // no-cors is expected here; success is verified by checking the linked response sheet.
-  await fetch(GOOGLE_FORM_ACTION, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-    },
-    body: body.toString(),
-  });
+  return entries;
+}
 
-  return true;
+export async function submitToGoogleForm(data) {
+  const entries = buildGoogleFormPayload(data);
+
+  if (!entries.length) {
+    throw new Error('沒有可送出的表單資料');
+  }
+
+  return new Promise((resolve) => {
+    const iframeName = `pfm_google_form_target_${Date.now()}`;
+
+    const iframe = document.createElement('iframe');
+    iframe.name = iframeName;
+    iframe.style.display = 'none';
+
+    const form = document.createElement('form');
+    form.action = GOOGLE_FORM_ACTION;
+    form.method = 'POST';
+    form.target = iframeName;
+    form.acceptCharset = 'UTF-8';
+    form.style.display = 'none';
+
+    entries.forEach(([entryId, value]) => appendHiddenInput(form, entryId, value));
+
+    // Google Forms accepts normal browser form posts most reliably.
+    // These hidden fields are harmless and help avoid blank-response rows on some forms.
+    appendHiddenInput(form, 'submit', 'Submit');
+
+    document.body.appendChild(iframe);
+    document.body.appendChild(form);
+
+    let settled = false;
+    const cleanup = () => {
+      if (settled) return;
+      settled = true;
+      form.remove();
+      iframe.remove();
+      resolve(true);
+    };
+
+    iframe.addEventListener('load', cleanup, { once: true });
+    form.submit();
+
+    // Google blocks readable responses, so keep a short fallback.
+    window.setTimeout(cleanup, 1800);
+  });
 }
