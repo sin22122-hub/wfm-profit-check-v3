@@ -76,44 +76,33 @@ function appendInput(form, name, value) {
 }
 
 export async function submitToGoogleForm(data) {
-  return new Promise((resolve) => {
-    const iframeName = `google-form-target-${Date.now()}`;
-    const iframe = document.createElement('iframe');
-    iframe.name = iframeName;
-    iframe.style.display = 'none';
+  const body = new URLSearchParams();
 
-    const form = document.createElement('form');
-    form.action = GOOGLE_FORM_ACTION;
-    form.method = 'POST';
-    form.target = iframeName;
-    form.style.display = 'none';
+  Object.entries(FIELD_MAP).forEach(([key, entryId]) => {
+    const value = data[key];
 
-    Object.entries(FIELD_MAP).forEach(([key, entryId]) => {
-      const value = data[key];
-      if (Array.isArray(value)) {
-        value.forEach((item) => appendInput(form, entryId, item));
-      } else {
-        appendInput(form, entryId, value);
-      }
-    });
+    if (Array.isArray(value)) {
+      value
+        .filter((item) => item !== undefined && item !== null && String(item).trim() !== '')
+        .forEach((item) => body.append(entryId, String(item)));
+      return;
+    }
 
-    let done = false;
-    const cleanup = () => {
-      if (done) return;
-      done = true;
-      setTimeout(() => {
-        form.remove();
-        iframe.remove();
-      }, 500);
-      resolve(true);
-    };
-
-    iframe.addEventListener('load', cleanup);
-    document.body.appendChild(iframe);
-    document.body.appendChild(form);
-    form.submit();
-
-    // Google Forms often redirects inside the hidden iframe; keep the UI moving even if the iframe load event is suppressed.
-    setTimeout(cleanup, 2500);
+    if (value !== undefined && value !== null && String(value).trim() !== '') {
+      body.append(entryId, String(value));
+    }
   });
+
+  // Google Forms does not return CORS-readable responses.
+  // no-cors is expected here; success is verified by checking the linked response sheet.
+  await fetch(GOOGLE_FORM_ACTION, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    },
+    body: body.toString(),
+  });
+
+  return true;
 }
