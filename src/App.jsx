@@ -7,6 +7,7 @@ import ResultDashboard from './components/ResultDashboard.jsx';
 import { questions } from './data/questions.js';
 import { calculateDiagnosis } from './utils/calculations.js';
 import { submitToGoogleForm } from './utils/googleFormApi.js';
+import { fetchDashboardData } from './utils/sheetApi.js';
 
 export default function App() {
   const [view, setView] = useState('home');
@@ -19,25 +20,28 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSubmit = async (data) => {
-    console.log('PFM DATA', data);
-    
-    try {
-      setIsSubmitting(true);
+const handleSubmit = async (data) => {
+  try {
+    setIsSubmitting(true);
 
-      await submitToGoogleForm(data);
+    await submitToGoogleForm(data);
 
-      setFormData(data);
-      setResult(calculateDiagnosis(data));
-      setView('result');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch (error) {
-      console.error('Google Form submit failed:', error);
-      alert('資料送出失敗，請稍後再試。');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    // 等待 Google Sheet 完成寫入與公式更新
+    await new Promise((resolve) => setTimeout(resolve, 1800));
+
+    const sheetResult = await fetchDashboardData();
+
+    setFormData(data);
+    setResult(sheetResult);
+    setView('result');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (error) {
+    console.error('PFM submit/read failed:', error);
+    alert('資料送出或讀取結果失敗，請稍後再試。');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <>
