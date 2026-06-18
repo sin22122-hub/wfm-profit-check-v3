@@ -1,5 +1,5 @@
 const GOOGLE_FORM_ACTION =
-  'https://docs.google.com/forms/d/e/1FAIpQLSdhzTKW4jMkBPbQ58tJ2UJHQP2XNjwfJyD5MowF6FCc-dZhhA/viewform?usp=preview';
+  'https://docs.google.com/forms/d/e/1FAIpQLSdhzTKW4jMkBPbQ58tJ2UJHQP2XNjwfJyD5MowF6FCc-dZhhA/formResponse';
 
 const FIELD_MAP = {
   storeName: 'entry.1083752353',
@@ -100,17 +100,21 @@ export async function submitToGoogleForm(data) {
     throw new Error('沒有可送出的表單資料');
   }
 
-  const params = new URLSearchParams();
+  const body = new URLSearchParams();
 
   entries.forEach(([entryId, value]) => {
-    params.append(entryId, value);
+    body.append(entryId, value);
   });
 
-  const submitUrl = `${GOOGLE_FORM_ACTION}?${params.toString()}`;
+  body.append('submit', 'Submit');
 
-  await fetch(submitUrl, {
-    method: 'GET',
-    mode: 'no-cors'
+  await fetch(GOOGLE_FORM_ACTION, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    },
+    body: body.toString(),
   });
 
   return true;
