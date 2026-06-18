@@ -67,26 +67,53 @@ const FIELD_MAP = {
   adTracking: 'entry.1895985700',
 };
 
+function appendInput(form, name, value) {
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = name;
+  input.value = value ?? '';
+  form.appendChild(input);
+}
+
 export async function submitToGoogleForm(data) {
-  const formData = new FormData();
+  return new Promise((resolve) => {
+    const iframeName = `google-form-target-${Date.now()}`;
+    const iframe = document.createElement('iframe');
+    iframe.name = iframeName;
+    iframe.style.display = 'none';
 
-  Object.entries(FIELD_MAP).forEach(([key, entryId]) => {
-    const value = data[key];
+    const form = document.createElement('form');
+    form.action = GOOGLE_FORM_ACTION;
+    form.method = 'POST';
+    form.target = iframeName;
+    form.style.display = 'none';
 
-    if (Array.isArray(value)) {
-      value.forEach((item) => {
-        formData.append(entryId, item);
-      });
-    } else {
-      formData.append(entryId, value ?? '');
-    }
+    Object.entries(FIELD_MAP).forEach(([key, entryId]) => {
+      const value = data[key];
+      if (Array.isArray(value)) {
+        value.forEach((item) => appendInput(form, entryId, item));
+      } else {
+        appendInput(form, entryId, value);
+      }
+    });
+
+    let done = false;
+    const cleanup = () => {
+      if (done) return;
+      done = true;
+      setTimeout(() => {
+        form.remove();
+        iframe.remove();
+      }, 500);
+      resolve(true);
+    };
+
+    iframe.addEventListener('load', cleanup);
+    document.body.appendChild(iframe);
+    document.body.appendChild(form);
+    form.submit();
+
+    // Google Forms often redirects inside the hidden iframe; keep the UI moving even if the iframe load event is suppressed.
+    setTimeout(cleanup, 2500);
   });
-
-  await fetch(GOOGLE_FORM_ACTION, {
-    method: 'POST',
-    mode: 'no-cors',
-    body: formData,
-  });
-
-  return true;
 }
