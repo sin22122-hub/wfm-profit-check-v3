@@ -20,6 +20,8 @@ export default function App() {
   };
 
   const handleSubmit = async (data) => {
+    console.log('PFM DATA', data);
+    
     try {
       setIsSubmitting(true);
 
