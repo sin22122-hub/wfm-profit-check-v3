@@ -100,21 +100,17 @@ export async function submitToGoogleForm(data) {
     throw new Error('沒有可送出的表單資料');
   }
 
-  const body = new URLSearchParams();
+  const params = new URLSearchParams();
 
   entries.forEach(([entryId, value]) => {
-    body.append(entryId, value);
+    params.append(entryId, value);
   });
 
-  body.append('submit', 'Submit');
+  const submitUrl = `${GOOGLE_FORM_ACTION}?${params.toString()}`;
 
-  await fetch(GOOGLE_FORM_ACTION, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-    },
-    body: body.toString(),
+  await fetch(submitUrl, {
+    method: 'GET',
+    mode: 'no-cors'
   });
 
   return true;
