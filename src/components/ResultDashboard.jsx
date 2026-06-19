@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 
+// TODO: 貼上正式預約連結後，將空字串改成你的 LINE / 預約頁網址。
+const BOOKING_URL = '';
+
 const statusTone = (value = '') => {
   if (['優秀', '健康', '良好', '極高', '高', '成長期', '擴張期'].includes(value)) return 'good';
   if (['普通', '穩定', '中', '待改善', '穩定期'].includes(value)) return 'warn';
@@ -12,10 +15,23 @@ const display = (value, fallback = '-') => {
   return value;
 };
 
+const money = (value) => {
+  const text = display(value);
+  if (text === '-') return text;
+  return String(text).startsWith('$') ? text : `$${text}`;
+};
+
+const noWrapStrongStyle = {
+  whiteSpace: 'nowrap',
+  wordBreak: 'keep-all',
+  overflowWrap: 'normal',
+  fontVariantNumeric: 'tabular-nums',
+};
+
 const MetricCard = ({ label, value, sub, tone, large = false }) => (
   <div className={`pfm-card metric-card-v12 ${tone ? `tone-${tone}` : ''} ${large ? 'large' : ''}`}>
     <span>{label}</span>
-    <strong>{display(value)}</strong>
+    <strong style={noWrapStrongStyle}>{display(value)}</strong>
     {sub && <p>{sub}</p>}
   </div>
 );
@@ -101,7 +117,7 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
           <MetricCard label="毛利率" value={result.grossMargin} />
           <MetricCard label="淨利率" value={result.netMargin} />
           <MetricCard label="回流率" value={result.returnRate} />
-          <MetricCard label="客單價" value={`$${display(result.averageOrderValue)}`} />
+          <MetricCard label="客單價" value={money(result.averageOrderValue)} />
         </div>
       </Section>
 
@@ -122,17 +138,28 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
       <Section title="獲利成長機會分析" intro="這裡不是承諾營收，而是協助你看見目前經營結構中可能被放大的空間。">
         <div className="metric-grid-v12 four">
           <MetricCard label="回流提升空間" value={result.returnGrowthRoom} />
-          <MetricCard label="可轉化營收" value={result.convertibleRevenue} />
-          <MetricCard label="可提升獲利" value={result.profitGrowthRoom} />
+          <MetricCard label="可轉化營收" value={money(result.convertibleRevenue)} />
+          <MetricCard label="可提升獲利" value={money(result.profitGrowthRoom)} />
           <MetricCard label="成長潛力評級" value={result.growthPotentialLevel} tone={statusTone(result.growthPotentialLevel)} />
         </div>
       </Section>
 
-      <section className="hidden-cost-card-v12">
-        <div>
+      <section
+        className="hidden-cost-card-v12"
+        style={{
+          display: 'block',
+          padding: '48px 56px',
+          maxWidth: '1280px',
+          margin: '40px auto',
+        }}
+      >
+        <div style={{ maxWidth: '920px' }}>
           <p className="pfm-eyebrow">你可能忽略的隱形成本</p>
-          <h2>金流手續費正在持續吃掉你的淨利</h2>
-          <p>{display(result.hiddenCostWarning)}</p>
+          <h2 style={{ marginTop: '8px', marginBottom: '20px' }}>金流手續費正在持續吃掉你的淨利</h2>
+          <p style={{ lineHeight: 1.9, maxWidth: '920px' }}>{display(result.hiddenCostWarning)}</p>
+          <p style={{ lineHeight: 1.8, maxWidth: '920px', opacity: 0.86, marginTop: '18px' }}>
+            這類費用通常不會被老闆第一時間感覺到，但它會直接降低實際留下來的淨利。
+          </p>
         </div>
       </section>
 
@@ -165,8 +192,11 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
           </div>
 
           <Section title="第一章｜獲利結構分析" intro="獲利不是只看營收，而是看毛利、淨利與成本是否能留下錢。">
-            <div className="metric-grid-v12 seven">
-              <MetricCard label="本月營收" value={`$${display(result.totalRevenue)}`} />
+            <div
+              className="metric-grid-v12 seven"
+              style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))' }}
+            >
+              <MetricCard label="本月營收" value={money(result.totalRevenue)} />
               <MetricCard label="毛利率" value={result.grossMargin} />
               <MetricCard label="淨利率" value={result.netMargin} />
               <MetricCard label="人事成本率" value={result.hrCostRate} />
@@ -195,12 +225,13 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
           </Section>
 
           <Section
-  title="第四章｜轉換漏斗與廣告效率" intro="這裡用來判斷廣告是否真正帶來成交與營收，不代表 PFM 鼓勵依賴廣告，而是協助你看清每一筆廣告成本是否值得。"
->>
+            title="第四章｜轉換漏斗與廣告效率"
+            intro="這裡用來判斷廣告是否真正帶來成交與營收，不代表 PFM 鼓勵依賴廣告，而是協助你看清每一筆廣告成本是否值得。"
+          >
             <div className="metric-grid-v12 six">
-              <MetricCard label="CPA" value={result.cpa} sub="每成交一位客人的廣告總成本"/>
-              <MetricCard label="ROAS" value={result.roas} sub="每 1 元廣告成本創造的營收倍數"/>
-              <MetricCard label="金流手續費率" value={result.paymentFeeRate} sub="非現金收款平台成本占營收比例"/>
+              <MetricCard label="CPA" value={result.cpa} sub="每成交一位客人的廣告總成本" />
+              <MetricCard label="ROAS" value={result.roas} sub="每 1 元廣告成本創造的營收倍數" />
+              <MetricCard label="金流手續費率" value={result.paymentFeeRate} sub="非現金收款平台成本占營收比例" />
             </div>
           </Section>
 
@@ -226,7 +257,7 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
 
             <div className="cta-panel-v12">
               <p>{display(result.nextAction)}</p>
-              <a className="btn" href="#" target="_blank" rel="noreferrer">
+              <a className="btn" href={BOOKING_URL || '#'} target="_blank" rel="noreferrer">
                 {display(result.bookingText, '預約 PFM 一對一診斷')}
               </a>
             </div>
