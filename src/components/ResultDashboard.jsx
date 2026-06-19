@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 const BOOKING_URL = '';
 
 const statusTone = (value = '') => {
-  if (['優秀', '健康', '良好', '極高', '高', '成長期', '擴張期'].includes(value)) return 'good';
+  if (['優秀', '健康', '良好', '極高', '高', '成長期', '擴張期', '卓越'].includes(value)) return 'good';
   if (['普通', '穩定', '中', '待改善', '穩定期'].includes(value)) return 'warn';
   if (['需改善', '偏高', '危險', '偏弱', '低', '薄弱', '求生期'].includes(value)) return 'risk';
   return '';
@@ -19,6 +19,43 @@ const money = (value) => {
   const text = display(value);
   if (text === '-') return text;
   return String(text).startsWith('$') ? text : `$${text}`;
+};
+
+const toNumber = (value) => {
+  if (value === undefined || value === null || value === '') return 0;
+  return Number(String(value).replace(/[$,%\s,]/g, '')) || 0;
+};
+
+const getRoasLevel = (roas) => {
+  const value = toNumber(roas);
+  if (value >= 20) return '卓越';
+  if (value >= 10) return '優秀';
+  if (value >= 5) return '良好';
+  if (value >= 3) return '普通';
+  return '偏低';
+};
+
+const getRoasInsight = (roas) => {
+  const value = toNumber(roas).toFixed(2);
+  const level = getRoasLevel(roas);
+
+  if (level === '卓越') {
+    return `每投入 1 元廣告費，可創造約 ${value} 元營收。廣告效率非常卓越，目前廣告不是主要瓶頸，下一步應優先檢查回流率、客單價與服務產能。`;
+  }
+
+  if (level === '優秀') {
+    return `每投入 1 元廣告費，可創造約 ${value} 元營收。廣告效率表現優秀，可持續優化素材與受眾，同時強化會員經營與回流機制。`;
+  }
+
+  if (level === '良好') {
+    return `每投入 1 元廣告費，可創造約 ${value} 元營收。廣告效率良好，建議持續測試素材，並提升預約與成交轉換率。`;
+  }
+
+  if (level === '普通') {
+    return `每投入 1 元廣告費，可創造約 ${value} 元營收。廣告效率普通，建議檢查廣告內容、受眾設定與預約流程。`;
+  }
+
+  return `每投入 1 元廣告費，只創造約 ${value} 元營收。廣告效率偏低，建議優先檢查廣告素材、受眾設定與成交流程。`;
 };
 
 const noWrapStrongStyle = {
@@ -78,6 +115,9 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
   const problems = [result.problem1, result.problem2, result.problem3].filter(Boolean);
   const strengths = [result.strength1, result.strength2, result.strength3].filter(Boolean);
   const actions = [result.priority1, result.priority2, result.priority3].filter(Boolean);
+
+  const roasLevel = getRoasLevel(result.roas);
+  const roasInsight = getRoasInsight(result.roas);
 
   const unlockBlueprint = () => {
     setUnlocked(true);
@@ -228,10 +268,35 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
             title="第四章｜轉換漏斗與廣告效率"
             intro="這裡用來判斷廣告是否真正帶來成交與營收，不代表 PFM 鼓勵依賴廣告，而是協助你看清每一筆廣告成本是否值得。"
           >
-            <div className="metric-grid-v12 six">
-              <MetricCard label="CPA" value={result.cpa} sub="每成交一位客人的廣告總成本" />
-              <MetricCard label="ROAS" value={result.roas} sub="每 1 元廣告成本創造的營收倍數" />
-              <MetricCard label="金流手續費率" value={result.paymentFeeRate} sub="非現金收款平台成本占營收比例" />
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'minmax(0, 1fr) minmax(280px, 0.9fr)',
+                gap: '24px',
+                alignItems: 'stretch',
+              }}
+            >
+              <div className="metric-grid-v12 six">
+                <MetricCard label="CPA" value={result.cpa} sub="每成交一位客人的廣告總成本" />
+                <MetricCard label="ROAS" value={result.roas} sub="每 1 元廣告成本創造的營收倍數" />
+                <MetricCard label="金流手續費率" value={result.paymentFeeRate} sub="非現金收款平台成本占營收比例" />
+              </div>
+
+              <div className={`pfm-card tone-${statusTone(roasLevel)}`} style={{ padding: '28px', minHeight: '100%' }}>
+                <span style={{ color: '#D6A746', fontSize: '15px' }}>廣告效率評級</span>
+                <strong
+                  style={{
+                    display: 'block',
+                    fontSize: '34px',
+                    lineHeight: 1.2,
+                    marginTop: '14px',
+                    marginBottom: '16px',
+                  }}
+                >
+                  {roasLevel}
+                </strong>
+                <p style={{ lineHeight: 1.9, margin: 0 }}>{roasInsight}</p>
+              </div>
             </div>
           </Section>
 
