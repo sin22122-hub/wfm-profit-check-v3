@@ -255,4 +255,24 @@
   .unlock-blueprint-v12,
   .blueprint-page-v12 { padding: 22px; border-radius: 22px; }
   .email-unlock-row-v12 { flex-direction: column; }
+  .hidden-cost-card-v12 {
+  display: block;
+  padding: 48px 56px;
+  max-width: 1280px;
+  margin: 40px auto;
+}
+
+.hidden-cost-card-v12 > div {
+  max-width: 900px;
+}
+
+.hidden-cost-card-v12 h2 {
+  margin-top: 8px;
+  margin-bottom: 20px;
+}
+
+.hidden-cost-card-v12 p {
+  line-height: 1.9;
+  max-width: 900px;
+}
 }
