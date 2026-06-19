@@ -275,4 +275,14 @@
   line-height: 1.9;
   max-width: 900px;
 }
+  .metric-card-v12 strong {
+  white-space: nowrap;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  font-variant-numeric: tabular-nums;
+}
+
+.metric-grid-v12.seven {
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
 }
