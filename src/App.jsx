@@ -80,7 +80,7 @@ console.log('PFM submitted data:', data);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       console.error('PFM submit/read failed:', error);
-      alert('資料送出或讀取結果失敗，請稍後再試。');
+     alert(`資料送出或讀取結果失敗：\n${error.message}`);
     } finally {
       setIsSubmitting(false);
     }
