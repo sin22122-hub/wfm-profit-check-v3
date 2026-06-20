@@ -16,31 +16,70 @@ export default function App() {
 
   const startAssessment = () => {
     setView('form');
+    setResult(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-const handleSubmit = async (data) => {
-  try {
-    setIsSubmitting(true);
+  const validateRequiredFields = (data) => {
+    const requiredFields = [
+      'storeName',
+      'contactName',
+      'phone',
+      'instagram',
+      'businessType',
+      'storeType',
+      'month',
+      'serviceRevenue',
+      'totalCustomers',
+      'newCustomers',
+      'returningCustomers',
+    ];
 
-    await submitToGoogleForm(data);
+    return requiredFields.filter((key) => {
+      const value = data[key];
 
-    // 等待 Google Sheet 完成寫入與公式更新
-    await new Promise((resolve) => setTimeout(resolve, 1800));
+      if (Array.isArray(value)) {
+        return value.length === 0;
+      }
 
-    const sheetResult = await fetchDashboardData();
+      return value === undefined || value === null || String(value).trim() === '';
+    });
+  };
 
-    setFormData(data);
-    setResult(sheetResult);
-    setView('result');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  } catch (error) {
-    console.error('PFM submit/read failed:', error);
-    alert('資料送出或讀取結果失敗，請稍後再試。');
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  const handleSubmit = async (data) => {
+    const missingFields = validateRequiredFields(data);
+
+    if (missingFields.length > 0) {
+      alert('請先完成必要欄位後，再產生健檢結果。');
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      await submitToGoogleForm(data);
+
+      // 等待 Google Sheet 完成寫入與公式更新
+      await new Promise((resolve) => setTimeout(resolve, 1800));
+
+      const sheetResult = await fetchDashboardData();
+
+      if (!sheetResult || !sheetResult.totalRevenue) {
+        alert('目前沒有取得有效健檢結果，請確認資料是否完整。');
+        return;
+      }
+
+      setFormData(data);
+      setResult(sheetResult);
+      setView('result');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (error) {
+      console.error('PFM submit/read failed:', error);
+      alert('資料送出或讀取結果失敗，請稍後再試。');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <>
@@ -58,6 +97,7 @@ const handleSubmit = async (data) => {
       </header>
 
       {view === 'home' && <HomePage onStart={startAssessment} />}
+
       {view === 'form' && (
         <AssessmentForm
           questions={questions}
@@ -65,6 +105,7 @@ const handleSubmit = async (data) => {
           isSubmitting={isSubmitting}
         />
       )}
+
       {view === 'result' && result && (
         <ResultDashboard
           result={result}
