@@ -60,7 +60,7 @@ export default function App() {
 
       const submitResult = await submitToGoogleForm(data);
 
-      await new Promise((resolve) => setTimeout(resolve, 1800));
+      await new Promise((resolve) => setTimeout(resolve, 3500));
 
       const sheetResult = await fetchDashboardData(submitResult.submissionId);
 
