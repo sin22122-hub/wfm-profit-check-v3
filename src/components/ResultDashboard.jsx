@@ -184,24 +184,22 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
         </div>
       </Section>
 
-      <section
-        className="hidden-cost-card-v12"
-        style={{
-          display: 'block',
-          padding: '48px 56px',
-          maxWidth: '1280px',
-          margin: '40px auto',
-        }}
-      >
-        <div style={{ maxWidth: '920px' }}>
-          <p className="pfm-eyebrow">你可能忽略的隱形成本</p>
-          <h2 style={{ marginTop: '8px', marginBottom: '20px' }}>金流手續費正在持續吃掉你的淨利</h2>
-          <p style={{ lineHeight: 1.9, maxWidth: '920px' }}>{display(result.hiddenCostWarning)}</p>
-          <p style={{ lineHeight: 1.8, maxWidth: '920px', opacity: 0.86, marginTop: '18px' }}>
-            這類費用通常不會被老闆第一時間感覺到，但它會直接降低實際留下來的淨利。
-          </p>
-        </div>
-      </section>
+     <section className="hidden-cost-card-v12 hidden-cost-upgrade">
+  <div className="hidden-cost-main">
+    <p className="pfm-eyebrow">你可能忽略的隱形成本</p>
+    <h2>金流手續費正在持續吃掉你的淨利</h2>
+    <p>{display(result.hiddenCostWarning)}</p>
+  </div>
+
+  <div className="hidden-cost-side">
+    <span>本期金流手續費率</span>
+    <strong>{display(result.paymentFeeRate)}</strong>
+    <p>
+      這類費用通常不會被老闆第一時間感覺到，
+      但它會直接降低實際留下來的淨利。
+    </p>
+  </div>
+</section>
 
       {!unlocked && (
         <section className="unlock-blueprint-v12">
