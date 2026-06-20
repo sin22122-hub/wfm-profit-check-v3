@@ -351,3 +351,57 @@
   }
 
 }
+/* =========================
+   隱形成本區塊升級版
+========================= */
+
+.hidden-cost-upgrade {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.7fr);
+  gap: 32px;
+  align-items: stretch;
+  padding: 48px 56px !important;
+  max-width: 1280px;
+  margin: 40px auto;
+}
+
+.hidden-cost-main h2 {
+  margin-top: 8px;
+  margin-bottom: 20px;
+}
+
+.hidden-cost-main p {
+  line-height: 1.9;
+}
+
+.hidden-cost-side {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(214,167,70,0.35);
+  border-radius: 24px;
+  padding: 28px;
+}
+
+.hidden-cost-side span {
+  color: #D6A746;
+  font-size: 15px;
+}
+
+.hidden-cost-side strong {
+  display: block;
+  font-size: 42px;
+  line-height: 1.1;
+  margin: 14px 0 16px;
+  color: #FFFFFF;
+}
+
+.hidden-cost-side p {
+  line-height: 1.8;
+  opacity: 0.88;
+}
+
+@media(max-width:900px) {
+  .hidden-cost-upgrade {
+    grid-template-columns: 1fr;
+    padding: 36px 28px !important;
+  }
+}
