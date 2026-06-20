@@ -1,12 +1,21 @@
 const SCRIPT_URL =
   'https://script.google.com/macros/s/AKfycbxddc6ekNXyyJNxtjAB-4F6ANol7pK21P8Jm0mWgBls9i_CBAUBGkeoVydiDokkWA/exec';
 
-export function fetchDashboardData() {
+export function fetchDashboardData(submissionId) {
   return new Promise((resolve, reject) => {
     const callbackName = `pfmSheetCallback_${Date.now()}`;
 
     const script = document.createElement('script');
-    script.src = `${SCRIPT_URL}?callback=${callbackName}`;
+
+    const params = new URLSearchParams({
+      callback: callbackName,
+    });
+
+    if (submissionId) {
+      params.set('submissionId', submissionId);
+    }
+
+    script.src = `${SCRIPT_URL}?${params.toString()}`;
     script.async = true;
 
     const cleanup = () => {
