@@ -103,12 +103,28 @@ console.log('PFM submitted data:', data);
 
       {view === 'home' && <HomePage onStart={startAssessment} />}
 
-      {view === 'form' && (
-        <AssessmentForm
-          questions={questions}
-          onSubmit={handleSubmit}
-          isSubmitting={isSubmitting}
-        />
+   {view === 'form' && !isSubmitting && (
+  <AssessmentForm
+    questions={questions}
+    onSubmit={handleSubmit}
+    isSubmitting={isSubmitting}
+  />
+)}
+
+{view === 'form' && isSubmitting && (
+  <main className="pfm-loading-page">
+    <div className="pfm-loading-card">
+      <div className="pfm-loading-mark">PFM</div>
+      <p className="pfm-eyebrow">產生診斷報告中</p>
+      <h1>正在整理你的店家獲利狀態</h1>
+      <div className="pfm-loading-steps">
+        <span>分析獲利結構</span>
+        <span>計算經營指標</span>
+        <span>產生成長藍圖</span>
+      </div>
+    </div>
+  </main>
+)}
       )}
 
       {view === 'result' && result && (
