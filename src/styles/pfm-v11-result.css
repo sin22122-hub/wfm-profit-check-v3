@@ -286,3 +286,68 @@
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
 }
 }
+/* =========================
+   第四章 廣告效率優化版
+========================= */
+
+.ad-performance-layout{
+  display:flex;
+  flex-direction:column;
+  gap:24px;
+}
+
+.ad-metric-row{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
+
+.ad-metric-row .metric-card-v12{
+  min-height:180px;
+}
+
+.ad-analysis-card{
+  background:#FFFFFF;
+  border:1px solid #E9D8B6;
+  border-radius:24px;
+  padding:32px;
+}
+
+.analysis-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.analysis-header span{
+  color:#D6A746;
+  font-size:15px;
+  font-weight:600;
+}
+
+.analysis-header strong{
+  font-size:42px;
+  color:#264A43;
+  line-height:1;
+}
+
+.ad-analysis-card p{
+  line-height:2;
+  font-size:17px;
+  color:#3B4A4F;
+}
+
+@media(max-width:900px){
+
+  .ad-metric-row{
+    grid-template-columns:1fr;
+  }
+
+  .analysis-header{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
+
+}
