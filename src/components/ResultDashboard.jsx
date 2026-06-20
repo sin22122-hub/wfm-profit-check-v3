@@ -351,6 +351,8 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
     </div>
   </div>
 </Section>
+
+</section>
       )}
 
       <div className="result-actions-v12">
