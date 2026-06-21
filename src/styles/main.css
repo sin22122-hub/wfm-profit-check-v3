@@ -615,3 +615,253 @@ select:focus {
     padding: 0 18px;
   }
 }
+.premium-home {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 72% 18%, rgba(200,155,60,.20), transparent 26%),
+    linear-gradient(135deg, #3A0710 0%, #5A0B19 42%, #240308 100%);
+  color: #fff;
+}
+
+.premium-hero {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 96px 32px 72px;
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 60px;
+  align-items: center;
+  position: relative;
+}
+
+.premium-hero::before {
+  content: "PFM";
+  position: absolute;
+  right: 28%;
+  top: 70px;
+  font-size: 220px;
+  font-weight: 900;
+  color: rgba(255,255,255,.035);
+  pointer-events: none;
+}
+
+.premium-hero-copy h1 {
+  font-size: clamp(48px, 6.5vw, 86px);
+  line-height: 1.05;
+  margin: 18px 0 24px;
+  color: #fff;
+  letter-spacing: -0.04em;
+}
+
+.premium-hero-copy h1 span {
+  display: block;
+  color: #D9B65F;
+  margin-top: 10px;
+}
+
+.premium-hero-copy .lead {
+  max-width: 620px;
+  color: rgba(255,255,255,.82);
+}
+
+.premium-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 34px 0;
+}
+
+.premium-icons span {
+  color: #E8C56C;
+  font-weight: 800;
+}
+
+.premium-main-btn {
+  min-width: 220px;
+  font-size: 16px;
+}
+
+.premium-home .micro {
+  color: rgba(255,255,255,.66);
+}
+
+.premium-report-card {
+  min-height: 520px;
+  border-radius: 28px;
+  padding: 44px;
+  background:
+    linear-gradient(145deg, rgba(122,16,36,.96), rgba(45,5,12,.98));
+  border: 1px solid rgba(216,174,78,.38);
+  box-shadow: 0 34px 100px rgba(0,0,0,.32);
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-report-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 0%, transparent 46%, rgba(255,255,255,.08) 47%, transparent 66%);
+}
+
+.report-cover-mark {
+  font-size: 72px;
+  font-weight: 900;
+  color: #D9B65F;
+  font-family: Georgia, serif;
+  margin-bottom: 50px;
+}
+
+.premium-report-card p {
+  color: #D9B65F;
+  font-weight: 800;
+  position: relative;
+}
+
+.premium-report-card h2 {
+  font-size: 42px;
+  line-height: 1.2;
+  color: white;
+  position: relative;
+}
+
+.report-score {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 8px solid rgba(216,174,78,.85);
+  display: grid;
+  place-items: center;
+  margin: 58px 0 28px auto;
+  color: white;
+  position: relative;
+}
+
+.report-score span {
+  font-size: 14px;
+  color: #E8C56C;
+}
+
+.report-score strong {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.report-score small {
+  color: rgba(255,255,255,.7);
+}
+
+.report-meta {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  position: relative;
+}
+
+.report-meta span {
+  border: 1px solid rgba(216,174,78,.28);
+  border-radius: 14px;
+  padding: 12px;
+  color: rgba(255,255,255,.82);
+}
+
+.premium-preview {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 40px 32px 64px;
+}
+
+.section-title-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 34px;
+}
+
+.section-title-line span {
+  width: 90px;
+  height: 1px;
+  background: rgba(216,174,78,.55);
+}
+
+.section-title-line h2 {
+  color: #E8C56C;
+  letter-spacing: .08em;
+}
+
+.premium-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.premium-feature-grid div {
+  background: rgba(255,252,246,.95);
+  color: #4A0915;
+  border: 1px solid rgba(216,174,78,.34);
+  border-radius: 20px;
+  padding: 30px 24px;
+  text-align: center;
+}
+
+.premium-feature-grid strong {
+  display: block;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.premium-feature-grid p {
+  color: #6B5B55;
+  margin: 0;
+}
+
+.premium-proof {
+  max-width: 1120px;
+  margin: 0 auto 54px;
+  padding: 30px;
+  border: 1px solid rgba(216,174,78,.28);
+  border-radius: 20px;
+  text-align: center;
+  color: #E8C56C;
+}
+
+.premium-proof p {
+  margin: 0 0 8px;
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.premium-proof span {
+  color: rgba(255,255,255,.74);
+}
+
+.premium-final-cta {
+  max-width: 1120px;
+  margin: 0 auto 80px;
+  padding: 48px 32px;
+  text-align: center;
+  border-radius: 28px;
+  background: rgba(255,252,246,.08);
+  border: 1px solid rgba(216,174,78,.25);
+}
+
+.premium-final-cta h2 {
+  color: white;
+  font-size: 32px;
+}
+
+@media (max-width: 960px) {
+  .premium-hero {
+    grid-template-columns: 1fr;
+    padding: 72px 22px 48px;
+  }
+
+  .premium-feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .premium-report-card {
+    min-height: auto;
+  }
+}
