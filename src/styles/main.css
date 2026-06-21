@@ -1888,3 +1888,279 @@ select:focus {
 .premium-final-cta,.final-cta { display:none!important; }
 
 @media (max-width:960px){.site-header{padding:0 18px!important}.pfm-lux-hero{min-height:auto;grid-template-columns:1fr;padding:58px 22px 40px;gap:34px}.pfm-lux-hero::after{display:none}.pfm-lux-icon-row,.pfm-lux-pain-grid,.pfm-lux-preview-grid{grid-template-columns:1fr}.pfm-lux-book{width:min(330px,88vw);transform:none}.pfm-lux-proof{margin-inline:18px;gap:18px}}
+
+/* =========================================================
+   PFM Luxury Fine Tune
+   貼到 src/styles/main.css 最底部
+   修正：Header導覽列、書本雷達/分數、底部金色葉子
+========================================================= */
+
+.pfm-lux-header {
+  display: grid !important;
+  grid-template-columns: 280px 1fr auto !important;
+  gap: 28px !important;
+}
+
+.pfm-brand-btn {
+  border: 0 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  text-align: left !important;
+}
+
+.pfm-lux-nav {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 42px !important;
+  height: 100% !important;
+}
+
+.pfm-lux-nav button {
+  height: 100% !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: rgba(255,255,255,.78) !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  position: relative !important;
+  letter-spacing: .04em !important;
+}
+
+.pfm-lux-nav button::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #f6d97c, #b98928);
+  box-shadow: 0 0 14px rgba(216,174,78,.45);
+  transform: translateX(-50%);
+  transition: width .22s ease;
+}
+
+.pfm-lux-nav button:hover,
+.pfm-lux-nav button.active {
+  color: #e8c56c !important;
+  text-shadow: 0 0 14px rgba(216,174,78,.2);
+}
+
+.pfm-lux-nav button:hover::after,
+.pfm-lux-nav button.active::after {
+  width: 42px;
+}
+
+.pfm-lux-icon-row {
+  gap: 26px !important;
+}
+
+.pfm-lux-icon-row > div {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 10px !important;
+  color: rgba(255,255,255,.9) !important;
+}
+
+.pfm-lux-icon-row > div + div {
+  position: relative;
+}
+
+.pfm-lux-icon-row > div + div::before {
+  content: "";
+  position: absolute;
+  left: -15px;
+  top: 8px;
+  width: 1px;
+  height: 54px;
+  background: linear-gradient(to bottom, transparent, rgba(216,174,78,.44), transparent);
+}
+
+.pfm-lux-icon-row .pfm-gold-badge {
+  width: 62px !important;
+  height: 62px !important;
+  border-radius: 50% !important;
+  background:
+    radial-gradient(circle at 32% 25%, rgba(255,239,164,.6), transparent 0 17%, rgba(90,8,22,.95) 18% 100%),
+    linear-gradient(145deg, #7a1024, #2d040a) !important;
+  color: #f6d97c !important;
+  border: 1px solid rgba(216,174,78,.68) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.18),
+    inset 0 -10px 20px rgba(0,0,0,.32),
+    0 14px 26px rgba(0,0,0,.26),
+    0 0 26px rgba(216,174,78,.14) !important;
+}
+
+.pfm-lux-icon-row .pfm-gold-badge svg {
+  width: 34px !important;
+  height: 34px !important;
+}
+
+.pfm-lux-radar {
+  width: 210px !important;
+  height: 150px !important;
+  margin: 0 auto 24px !important;
+}
+
+.pfm-lux-radar .radar-grid {
+  inset: 24px 40px 26px 40px !important;
+  border: 0 !important;
+  background:
+    linear-gradient(90deg, transparent 49.4%, rgba(216,174,78,.5) 50%, transparent 50.6%),
+    linear-gradient(18deg, transparent 49.4%, rgba(216,174,78,.38) 50%, transparent 50.6%),
+    linear-gradient(-54deg, transparent 49.4%, rgba(216,174,78,.38) 50%, transparent 50.6%),
+    repeating-radial-gradient(circle at 50% 50%, transparent 0 17px, rgba(216,174,78,.32) 18px 19px, transparent 20px 30px);
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0 38%) !important;
+}
+
+.pfm-lux-radar .radar-grid::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(216,174,78,.72);
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0 38%);
+}
+
+.pfm-lux-radar .radar-fill {
+  inset: 45px 70px 40px 68px !important;
+  background: rgba(216,174,78,.42) !important;
+  clip-path: polygon(50% 0%, 100% 38%, 78% 100%, 20% 92%, 0 42%) !important;
+}
+
+.pfm-lux-radar span {
+  font-size: 10px !important;
+  white-space: nowrap !important;
+  color: rgba(255,255,255,.76) !important;
+}
+
+.pfm-lux-radar span:nth-child(3) { top: 0 !important; left: 77px !important; }
+.pfm-lux-radar span:nth-child(4) { right: 0 !important; top: 60px !important; }
+.pfm-lux-radar span:nth-child(5) { right: 45px !important; bottom: 0 !important; }
+.pfm-lux-radar span:nth-child(6) { left: 0 !important; top: 60px !important; }
+.pfm-lux-radar span:nth-child(7) { left: 74px !important; bottom: 10px !important; }
+
+.pfm-lux-score {
+  width: 124px !important;
+  height: 124px !important;
+  margin: 0 auto 26px !important;
+  border-width: 6px !important;
+  box-shadow:
+    inset 0 0 20px rgba(216,174,78,.08),
+    0 0 18px rgba(216,174,78,.12) !important;
+}
+
+.pfm-lux-score small,
+.pfm-lux-score strong,
+.pfm-lux-score em {
+  display: block !important;
+  text-align: center !important;
+}
+
+.pfm-lux-score small {
+  align-self: end !important;
+  margin-top: 16px !important;
+}
+
+.pfm-lux-score strong {
+  font-size: 40px !important;
+  align-self: center !important;
+}
+
+.pfm-lux-score em {
+  align-self: start !important;
+  margin-bottom: 12px !important;
+}
+
+.pfm-lux-proof {
+  position: relative !important;
+  overflow: hidden !important;
+  padding: 30px 54px !important;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(216,174,78,.10), transparent 20%),
+    radial-gradient(circle at 80% 50%, rgba(216,174,78,.10), transparent 20%),
+    linear-gradient(180deg, rgba(105,10,26,.52), rgba(43,4,12,.92)) !important;
+}
+
+.pfm-lux-proof::before,
+.pfm-lux-proof::after {
+  content: "❧";
+  position: absolute;
+  top: 50%;
+  color: #e8c56c;
+  font-size: 72px;
+  line-height: 1;
+  font-family: Georgia, serif;
+  transform: translateY(-50%) rotate(-22deg);
+  text-shadow:
+    0 0 8px rgba(216,174,78,.55),
+    0 0 20px rgba(216,174,78,.22);
+  opacity: .95;
+}
+
+.pfm-lux-proof::before {
+  left: 80px;
+}
+
+.pfm-lux-proof::after {
+  right: 80px;
+  transform: translateY(-50%) scaleX(-1) rotate(-22deg);
+}
+
+.pfm-lux-proof .laurel {
+  display: none !important;
+}
+
+.pfm-lux-proof h2 {
+  letter-spacing: .12em !important;
+  font-size: 30px !important;
+}
+
+.pfm-lux-proof p {
+  letter-spacing: .12em !important;
+}
+
+#pfm-about,
+#pfm-process,
+#pfm-value,
+#pfm-faq {
+  scroll-margin-top: 96px;
+}
+
+@media (max-width: 960px) {
+  .pfm-lux-header {
+    grid-template-columns: 1fr auto !important;
+  }
+
+  .pfm-lux-nav {
+    display: none !important;
+  }
+
+  .pfm-lux-icon-row {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    max-width: 320px;
+  }
+
+  .pfm-lux-icon-row > div + div::before {
+    display: none;
+  }
+
+  .pfm-lux-proof::before {
+    left: 18px;
+    font-size: 46px;
+  }
+
+  .pfm-lux-proof::after {
+    right: 18px;
+    font-size: 46px;
+  }
+
+  .pfm-lux-proof h2 {
+    font-size: 22px !important;
+  }
+}
