@@ -109,17 +109,42 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
   const roasInsight = getRoasInsight(result.roas);
 
   const downloadPDF = () => {
-    const element = document.getElementById('pfm-report');
+    const element = document.getElementById('growth-blueprint');
+
+    if (!element) {
+      alert('請先解鎖店家成長藍圖後，再下載 PDF 診斷報告。');
+      return;
+    }
+
+    document.body.classList.add('pdf-exporting');
 
     const options = {
-      margin: 8,
+      margin: [8, 8, 8, 8],
       filename: `PFM美業獲利健檢_${display(formData.storeName, '店家')}.pdf`,
       image: { type: 'jpeg', quality: 1 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#F7F3EC',
+        windowWidth: 1280,
+      },
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait',
+      },
+      pagebreak: {
+        mode: ['avoid-all', 'css', 'legacy'],
+      },
     };
 
-    html2pdf().set(options).from(element).save();
+    html2pdf()
+      .set(options)
+      .from(element)
+      .save()
+      .finally(() => {
+        document.body.classList.remove('pdf-exporting');
+      });
   };
 
   const unlockBlueprint = () => {
