@@ -146,13 +146,14 @@ export default function HomePage({ onStart }) {
             適用：美容、美甲、美睫、美髮、紋繡、SPA等項目之工作室、小型店面與連鎖經營。
           </p>
         </div>
-<div className="pfm-lux-book-area">
-  <img
-    className="pfm-book-3d-img"
-    src="/pfm-book-3d.webp"
-    alt="PFM 美業獲利健檢報告"
-  />
-</div>
+
+        <div className="pfm-lux-book-area">
+          <img
+            className="pfm-book-3d-img"
+            src="/pfm-book-3d.webp"
+            alt="PFM 美業獲利健檢報告"
+          />
+        </div>
       </section>
 
       <section className="pfm-lux-pain" id="pfm-about">
