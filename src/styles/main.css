@@ -2164,3 +2164,229 @@ select:focus {
     font-size: 22px !important;
   }
 }
+/* =========================================================
+   PFM Final Detail Fix
+   貼到 src/styles/main.css 最底部
+   目標：修 Logo、縮書本、移除書本雷達圖、重排分數、改底部葉子
+========================================================= */
+
+/* Logo 字體恢復辨識度 */
+.pfm-lux-header .brand strong,
+.site-header .brand strong {
+  font-size: 16px !important;
+  line-height: 1.1 !important;
+  letter-spacing: .01em !important;
+}
+
+.pfm-lux-header .brand span,
+.site-header .brand span {
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+}
+
+.pfm-lux-header .brand-mark,
+.site-header .brand-mark {
+  font-size: 18px !important;
+}
+
+/* Hero 與書本比例微調 */
+.pfm-lux-hero {
+  min-height: 590px !important;
+  grid-template-columns: 1fr .95fr !important;
+  gap: 44px !important;
+}
+
+.pfm-lux-book-area {
+  min-height: 500px !important;
+}
+
+.pfm-lux-book-stage {
+  width: 450px !important;
+  height: 78px !important;
+  bottom: 36px !important;
+}
+
+.pfm-lux-book {
+  width: 310px !important;
+  min-height: 440px !important;
+  padding: 38px 34px !important;
+}
+
+.pfm-lux-book-logo {
+  font-size: 56px !important;
+}
+
+.pfm-lux-book h2 {
+  font-size: 25px !important;
+  margin: 32px 0 26px !important;
+}
+
+/* 書本不要再用雷達圖，改成四個報告重點 */
+.pfm-lux-radar {
+  display: none !important;
+}
+
+.pfm-book-focus-list {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 0 0 26px;
+}
+
+.pfm-book-focus-list span {
+  border: 1px solid rgba(216,174,78,.34);
+  border-radius: 12px;
+  padding: 9px 8px;
+  color: rgba(255,236,167,.92);
+  font-size: 12px;
+  text-align: center;
+  background: rgba(32,3,8,.22);
+}
+
+/* 書本分數完整置中 */
+.pfm-lux-score {
+  width: 120px !important;
+  height: 120px !important;
+  margin: 0 auto 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 2px !important;
+  border-radius: 50% !important;
+  border: 6px solid rgba(216,174,78,.92) !important;
+  box-shadow:
+    inset 0 0 20px rgba(216,174,78,.08),
+    0 0 18px rgba(216,174,78,.12) !important;
+}
+
+.pfm-lux-score small {
+  margin: 0 !important;
+  color: #e8c56c !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+}
+
+.pfm-lux-score strong {
+  color: #fff !important;
+  font-size: 40px !important;
+  line-height: 1 !important;
+}
+
+.pfm-lux-score em {
+  margin: 0 !important;
+  color: rgba(255,255,255,.75) !important;
+  font-style: normal !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+}
+
+/* 四大面向：改成更穩定，不追求假立體，避免廉價感 */
+.pfm-lux-icon-row {
+  display: flex !important;
+  gap: 30px !important;
+  align-items: flex-start !important;
+}
+
+.pfm-lux-icon-row > div {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-width: 74px !important;
+}
+
+.pfm-lux-icon-row > div + div::before {
+  display: none !important;
+}
+
+.pfm-lux-icon-row .pfm-gold-badge {
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 50% !important;
+  background: rgba(70,6,17,.72) !important;
+  border: 1.5px solid rgba(232,197,108,.78) !important;
+  color: #e8c56c !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.04),
+    0 0 18px rgba(216,174,78,.10) !important;
+}
+
+.pfm-lux-icon-row .pfm-gold-badge svg {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.pfm-lux-icon-row span:last-child {
+  color: #e8c56c !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+}
+
+/* 痛點與診斷預覽 icon 保持圓章，但降低過度發光 */
+.pfm-lux-pain-grid .pfm-gold-badge,
+.pfm-lux-preview-grid .pfm-gold-badge {
+  background: rgba(93,8,23,.95) !important;
+  border: 1px solid rgba(232,197,108,.42) !important;
+  box-shadow: 0 10px 20px rgba(0,0,0,.18) !important;
+}
+
+/* 底部葉子改用 SVG，不用符號 */
+.pfm-lux-proof {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: 150px 1fr 150px !important;
+  align-items: center !important;
+  gap: 24px !important;
+  padding: 26px 44px !important;
+}
+
+.pfm-lux-proof::before,
+.pfm-lux-proof::after {
+  display: none !important;
+}
+
+.pfm-lux-proof .pfm-laurel-svg {
+  width: 120px;
+  height: 80px;
+  color: #e8c56c;
+  filter:
+    drop-shadow(0 0 8px rgba(216,174,78,.45))
+    drop-shadow(0 0 18px rgba(216,174,78,.18));
+}
+
+.pfm-lux-proof .pfm-laurel-svg:last-child {
+  transform: scaleX(-1);
+}
+
+.pfm-lux-proof h2 {
+  font-size: 28px !important;
+  letter-spacing: .12em !important;
+}
+
+.pfm-lux-proof p {
+  letter-spacing: .12em !important;
+}
+
+/* 手機 */
+@media (max-width: 960px) {
+  .pfm-lux-hero {
+    grid-template-columns: 1fr !important;
+    min-height: auto !important;
+  }
+
+  .pfm-lux-book {
+    width: min(300px, 86vw) !important;
+    min-height: 420px !important;
+  }
+
+  .pfm-lux-proof {
+    grid-template-columns: 48px 1fr 48px !important;
+    padding: 24px 18px !important;
+  }
+
+  .pfm-lux-proof .pfm-laurel-svg {
+    width: 48px;
+  }
+}
