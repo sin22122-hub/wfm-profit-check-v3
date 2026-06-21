@@ -568,6 +568,17 @@
     display: none !important;
   }
 }
+/* =========================
+   PDF 匯出優化
+========================= */
+
+.pdf-action-bar {
+  max-width: 1280px;
+  margin: 0 auto 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .pdf-exporting .no-print {
   display: none !important;
 }
@@ -576,6 +587,7 @@
   width: 1180px !important;
   max-width: 1180px !important;
   margin: 0 auto !important;
+  padding: 28px !important;
   background: #F7F3EC !important;
 }
 
@@ -588,4 +600,23 @@
 
 .pdf-exporting .metric-grid-v12 {
   grid-template-columns: repeat(3, 1fr) !important;
+}
+
+.pdf-exporting .metric-grid-v12.four {
+  grid-template-columns: repeat(4, 1fr) !important;
+}
+
+.pdf-exporting .metric-grid-v12.seven {
+  grid-template-columns: repeat(3, 1fr) !important;
+}
+
+.pdf-exporting .pfm-card,
+.pdf-exporting .metric-card-v12 {
+  box-shadow: none !important;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
 }
