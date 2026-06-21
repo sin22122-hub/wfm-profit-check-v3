@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import html2pdf from 'html2pdf.js';
 
-// TODO: 貼上正式預約連結後，將空字串改成你的 LINE / 預約頁網址。
 const BOOKING_URL = '';
 
 const statusTone = (value = '') => {
@@ -39,21 +39,10 @@ const getRoasInsight = (roas) => {
   const value = toNumber(roas).toFixed(2);
   const level = getRoasLevel(roas);
 
-  if (level === '卓越') {
-    return `每投入 1 元廣告費，可創造約 ${value} 元營收。廣告效率非常卓越，目前廣告不是主要瓶頸，下一步應優先檢查回流率、客單價與服務產能。`;
-  }
-
-  if (level === '優秀') {
-    return `每投入 1 元廣告費，可創造約 ${value} 元營收。廣告效率表現優秀，可持續優化素材與受眾，同時強化會員經營與回流機制。`;
-  }
-
-  if (level === '良好') {
-    return `每投入 1 元廣告費，可創造約 ${value} 元營收。廣告效率良好，建議持續測試素材，並提升預約與成交轉換率。`;
-  }
-
-  if (level === '普通') {
-    return `每投入 1 元廣告費，可創造約 ${value} 元營收。廣告效率普通，建議檢查廣告內容、受眾設定與預約流程。`;
-  }
+  if (level === '卓越') return `每投入 1 元廣告費，可創造約 ${value} 元營收。廣告效率非常卓越，目前廣告不是主要瓶頸，下一步應優先檢查回流率、客單價與服務產能。`;
+  if (level === '優秀') return `每投入 1 元廣告費，可創造約 ${value} 元營收。廣告效率表現優秀，可持續優化素材與受眾，同時強化會員經營與回流機制。`;
+  if (level === '良好') return `每投入 1 元廣告費，可創造約 ${value} 元營收。廣告效率良好，建議持續測試素材，並提升預約與成交轉換率。`;
+  if (level === '普通') return `每投入 1 元廣告費，可創造約 ${value} 元營收。廣告效率普通，建議檢查廣告內容、受眾設定與預約流程。`;
 
   return `每投入 1 元廣告費，只創造約 ${value} 元營收。廣告效率偏低，建議優先檢查廣告素材、受眾設定與成交流程。`;
 };
@@ -119,6 +108,20 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
   const roasLevel = getRoasLevel(result.roas);
   const roasInsight = getRoasInsight(result.roas);
 
+  const downloadPDF = () => {
+    const element = document.getElementById('pfm-report');
+
+    const options = {
+      margin: 8,
+      filename: `PFM美業獲利健檢_${display(formData.storeName, '店家')}.pdf`,
+      image: { type: 'jpeg', quality: 1 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    };
+
+    html2pdf().set(options).from(element).save();
+  };
+
   const unlockBlueprint = () => {
     setUnlocked(true);
     setTimeout(() => {
@@ -130,7 +133,7 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
   };
 
   return (
-    <main className="pfm-result-page">
+    <main id="pfm-report" className="pfm-result-page">
       <section className="pfm-result-hero">
         <div className="hero-copy-v12">
           <p className="pfm-eyebrow">PFM 美業獲利健檢結果</p>
@@ -184,25 +187,22 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
         </div>
       </Section>
 
-     <section className="hidden-cost-card-v12 hidden-cost-upgrade">
-  <div className="hidden-cost-main">
-    <p className="pfm-eyebrow">你可能忽略的隱形成本</p>
-    <h2>金流手續費正在持續吃掉你的淨利</h2>
-    <p>{display(result.hiddenCostWarning)}</p>
-  </div>
+      <section className="hidden-cost-card-v12 hidden-cost-upgrade">
+        <div className="hidden-cost-main">
+          <p className="pfm-eyebrow">你可能忽略的隱形成本</p>
+          <h2>金流手續費正在持續吃掉你的淨利</h2>
+          <p>{display(result.hiddenCostWarning)}</p>
+        </div>
 
-  <div className="hidden-cost-side">
-    <span>本期金流手續費率</span>
-    <strong>{display(result.paymentFeeRate)}</strong>
-    <p>
-      這類費用通常不會被老闆第一時間感覺到，
-      但它會直接降低實際留下來的淨利。
-    </p>
-  </div>
-</section>
+        <div className="hidden-cost-side">
+          <span>本期金流手續費率</span>
+          <strong>{display(result.paymentFeeRate)}</strong>
+          <p>這類費用通常不會被老闆第一時間感覺到，但它會直接降低實際留下來的淨利。</p>
+        </div>
+      </section>
 
       {!unlocked && (
-        <section className="unlock-blueprint-v12">
+        <section className="unlock-blueprint-v12 no-print">
           <p className="pfm-eyebrow">免費解鎖</p>
           <h2>店家成長藍圖已產生</h2>
           <p>看懂結果只是開始。解鎖後可查看你的獲利結構、客戶結構、流量內容能力、成長瓶頸與顧問建議。</p>
@@ -223,6 +223,12 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
 
       {unlocked && (
         <section id="growth-blueprint" className="blueprint-page-v12">
+          <div className="pdf-action-bar no-print">
+            <button className="btn" onClick={downloadPDF}>
+              下載 PDF 診斷報告
+            </button>
+          </div>
+
           <div className="blueprint-hero-v12">
             <p className="pfm-eyebrow">店家成長藍圖</p>
             <h2>從「知道問題」進入「理解原因」</h2>
@@ -230,10 +236,7 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
           </div>
 
           <Section title="第一章｜獲利結構分析" intro="獲利不是只看營收，而是看毛利、淨利與成本是否能留下錢。">
-            <div
-              className="metric-grid-v12 seven"
-              style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))' }}
-            >
+            <div className="metric-grid-v12 seven" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))' }}>
               <MetricCard label="本月營收" value={money(result.totalRevenue)} />
               <MetricCard label="毛利率" value={result.grossMargin} />
               <MetricCard label="淨利率" value={result.netMargin} />
@@ -262,65 +265,26 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
             </div>
           </Section>
 
-<Section
-  title="第四章｜轉換漏斗與廣告效率"
-  intro="這裡用來判斷廣告是否真正帶來成交與營收，不代表 PFM 鼓勵依賴廣告，而是協助你看清每一筆廣告成本是否值得。"
->
-  <div
-    style={{
-      display: 'grid',
-      gridTemplateColumns: '1fr',
-      gap: '24px',
-    }}
-  >
-    <div
-      className="metric-grid-v12"
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, minmax(220px, 1fr))',
-        gap: '20px',
-      }}
-    >
-      <MetricCard label="CPA" value={result.cpa} sub="每成交一位客人的廣告總成本" />
-      <MetricCard label="ROAS" value={result.roas} sub="每 1 元廣告成本創造的營收倍數" />
-      <MetricCard label="金流手續費率" value={result.paymentFeeRate} sub="非現金收款平台成本占營收比例" />
-    </div>
+          <Section
+            title="第四章｜轉換漏斗與廣告效率"
+            intro="CPA 用來看每成交一位客人的廣告成本；ROAS 用來看每 1 元廣告費帶回多少營收。若未填寫廣告成交數，CPA 將無法計算，但 ROAS 仍可依營收與廣告費估算。"
+          >
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }}>
+              <div className="metric-grid-v12" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(220px, 1fr))', gap: '20px' }}>
+                <MetricCard label="CPA" value={result.cpa} sub="每成交一位客人的廣告總成本" />
+                <MetricCard label="ROAS" value={result.roas} sub="每 1 元廣告成本創造的營收倍數" />
+                <MetricCard label="金流手續費率" value={result.paymentFeeRate} sub="非現金收款平台成本占營收比例" />
+              </div>
 
-    <div
-      className={`pfm-card tone-${statusTone(roasLevel)}`}
-      style={{
-        padding: '32px 36px',
-        borderRadius: '24px',
-      }}
-    >
-      <span style={{ color: '#D6A746', fontSize: '15px' }}>
-        廣告效率評級
-      </span>
-
-      <strong
-        style={{
-          display: 'block',
-          fontSize: '36px',
-          lineHeight: 1.2,
-          marginTop: '12px',
-          marginBottom: '16px',
-        }}
-      >
-        {roasLevel}
-      </strong>
-
-      <p
-        style={{
-          lineHeight: 1.9,
-          margin: 0,
-          maxWidth: '880px',
-        }}
-      >
-        {roasInsight}
-      </p>
-    </div>
-  </div>
-</Section>
+              <div className={`pfm-card tone-${statusTone(roasLevel)}`} style={{ padding: '32px 36px', borderRadius: '24px' }}>
+                <span style={{ color: '#D6A746', fontSize: '15px' }}>廣告效率評級</span>
+                <strong style={{ display: 'block', fontSize: '36px', lineHeight: 1.2, marginTop: '12px', marginBottom: '16px' }}>
+                  {roasLevel}
+                </strong>
+                <p style={{ lineHeight: 1.9, margin: 0, maxWidth: '880px' }}>{roasInsight}</p>
+              </div>
+            </div>
+          </Section>
 
           <Section title="第五章｜成長瓶頸與顧問診斷">
             <div className="narrative-grid-v12">
@@ -339,21 +303,20 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
             </div>
           </Section>
 
-<Section title="第六章｜90天優先改善路徑">
-  <StepCards items={actions} />
+          <Section title="第六章｜90天優先改善路徑">
+            <StepCards items={actions} />
 
-  <div className="cta-panel-v12">
-    <p>{display(result.nextAction)}</p>
-    <a className="btn" href={BOOKING_URL || '#'} target="_blank" rel="noreferrer">
-      {display(result.bookingText, '預約 PFM 一對一診斷')}
-    </a>
-  </div>
-</Section>
-
-</section>
+            <div className="cta-panel-v12 no-print">
+              <p>{display(result.nextAction)}</p>
+              <a className="btn" href={BOOKING_URL || '#'} target="_blank" rel="noreferrer">
+                {display(result.bookingText, '預約 PFM 一對一診斷')}
+              </a>
+            </div>
+          </Section>
+        </section>
       )}
 
-      <div className="result-actions-v12">
+      <div className="result-actions-v12 no-print">
         <button className="btn secondary" onClick={onRestart}>
           重新健檢
         </button>
