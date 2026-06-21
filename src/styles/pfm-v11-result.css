@@ -556,3 +556,15 @@
     transform: translateY(-2px);
   }
 }
+.pdf-action-bar {
+  max-width: 1280px;
+  margin: 0 auto 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
