@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import html2pdf from 'html2pdf.js';
 
 const BOOKING_URL = '';
@@ -136,14 +136,43 @@ function RadarChart({ result }) {
 export default function ResultDashboard({ result, formData = {}, onRestart }) {
   const [unlocked, setUnlocked] = useState(false);
   const [email, setEmail] = useState('');
+  const [cachedReport, setCachedReport] = useState(() => {
+    try {
+      const saved = window.localStorage.getItem('pfm_latest_report');
+      return saved ? JSON.parse(saved) : null;
+    } catch (error) {
+      return null;
+    }
+  });
 
-  if (!result) return null;
+  useEffect(() => {
+    if (!result) return;
 
-  const problems = [result.problem1, result.problem2, result.problem3].filter(Boolean);
-  const strengths = [result.strength1, result.strength2, result.strength3].filter(Boolean);
-  const actions = [result.priority1, result.priority2, result.priority3].filter(Boolean);
-  const roasLevel = getRoasLevel(result.roas);
-  const roasInsight = getRoasInsight(result.roas);
+    const payload = {
+      result,
+      formData,
+      savedAt: new Date().toISOString(),
+    };
+
+    setCachedReport(payload);
+
+    try {
+      window.localStorage.setItem('pfm_latest_report', JSON.stringify(payload));
+    } catch (error) {
+      // localStorage 可能在隱私模式或容量不足時失敗，失敗時不影響結果頁顯示。
+    }
+  }, [result, formData]);
+
+  const activeResult = result || cachedReport?.result;
+  const activeFormData = result ? formData : (cachedReport?.formData || formData);
+
+  if (!activeResult) return null;
+
+  const problems = [activeResult.problem1, activeResult.problem2, activeResult.problem3].filter(Boolean);
+  const strengths = [activeResult.strength1, activeResult.strength2, activeResult.strength3].filter(Boolean);
+  const actions = [activeResult.priority1, activeResult.priority2, activeResult.priority3].filter(Boolean);
+  const roasLevel = getRoasLevel(activeResult.roas);
+  const roasInsight = getRoasInsight(activeResult.roas);
 
   const downloadPDF = () => {
     const element = document.getElementById('growth-blueprint');
@@ -157,7 +186,7 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
 
     const options = {
       margin: [8, 8, 8, 8],
-      filename: `PFM美業獲利健檢_${display(formData.storeName, '店家')}.pdf`,
+      filename: `PFM美業獲利健檢_${display(activeFormData.storeName, '店家')}.pdf`,
       image: { type: 'jpeg', quality: 1 },
       html2canvas: {
         scale: 2,
@@ -195,35 +224,35 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
   };
 
   return (
-    <main id="pfm-report" className="pfm-result-page pfm-report-luxury">
+    <main id="pfm-report" className="pfm-result-page pfm-report-luxury pfm-report-v14">
       <section className="pfm-report-cover">
         <div className="pfm-cover-copy">
           <p className="pfm-report-eyebrow">PFM 美業獲利健檢結果</p>
-          <h1>{display(formData.storeName, '你的店家')}｜經營診斷結果</h1>
-          <p>{display(result.stageComment)}</p>
+          <h1>{display(activeFormData.storeName, '你的店家')}｜經營診斷結果</h1>
+          <p>{display(activeResult.stageComment)}</p>
 
           <div className="pfm-cover-tags">
-            <span>{display(result.businessType || formData.businessType)}</span>
-            <span>{Array.isArray(formData.storeType) ? formData.storeType.join('、') : display(formData.storeType)}</span>
-            <span>{display(formData.month, '本期資料')}</span>
+            <span>{display(activeResult.businessType || activeFormData.businessType)}</span>
+            <span>{Array.isArray(activeFormData.storeType) ? activeFormData.storeType.join('、') : display(activeFormData.storeType)}</span>
+            <span>{display(activeFormData.month, '本期資料')}</span>
           </div>
         </div>
 
         <div className="pfm-cover-score">
           <span>店家成長階段</span>
-          <strong>{display(result.growthStage)}</strong>
-          <div>{display(result.growthScore)}</div>
+          <strong>{display(activeResult.growthStage)}</strong>
+          <div>{display(activeResult.growthScore)}</div>
           <p>綜合分數</p>
         </div>
       </section>
 
       <Chapter title="獲利健康度總覽" intro="先看最直接影響獲利與經營穩定度的核心指標。">
         <div className="pfm-metric-grid five">
-          <MetricCard label="毛利率" value={result.grossMargin} />
-          <MetricCard label="淨利率" value={result.netMargin} />
-          <MetricCard label="回流率" value={result.returnRate} />
-          <MetricCard label="客單價" value={money(result.averageOrderValue)} />
-          <MetricCard label="金流手續費率" value={result.paymentFeeRate} />
+          <MetricCard label="毛利率" value={activeResult.grossMargin} />
+          <MetricCard label="淨利率" value={activeResult.netMargin} />
+          <MetricCard label="回流率" value={activeResult.returnRate} />
+          <MetricCard label="客單價" value={money(activeResult.averageOrderValue)} />
+          <MetricCard label="金流手續費率" value={activeResult.paymentFeeRate} />
         </div>
       </Chapter>
 
@@ -243,10 +272,10 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
 
       <Chapter title="獲利成長機會分析" intro="這裡不是承諾營收，而是協助你看見目前經營結構中可能被放大的空間。">
         <div className="pfm-metric-grid four">
-          <MetricCard label="回流提升空間" value={result.returnGrowthRoom} />
-          <MetricCard label="可轉化營收" value={money(result.convertibleRevenue)} />
-          <MetricCard label="可提升獲利" value={money(result.profitGrowthRoom)} />
-          <MetricCard label="成長潛力評級" value={result.growthPotentialLevel} tone={statusTone(result.growthPotentialLevel)} />
+          <MetricCard label="回流提升空間" value={activeResult.returnGrowthRoom} />
+          <MetricCard label="可轉化營收" value={money(activeResult.convertibleRevenue)} />
+          <MetricCard label="可提升獲利" value={money(activeResult.profitGrowthRoom)} />
+          <MetricCard label="成長潛力評級" value={activeResult.growthPotentialLevel} tone={statusTone(activeResult.growthPotentialLevel)} />
         </div>
       </Chapter>
 
@@ -254,12 +283,12 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
         <div>
           <p className="pfm-report-eyebrow">你可能忽略的隱形成本</p>
           <h2>金流手續費正在持續吃掉你的淨利</h2>
-          <p>{display(result.hiddenCostWarning)}</p>
+          <p>{display(activeResult.hiddenCostWarning)}</p>
         </div>
 
         <div className="pfm-hidden-cost-number">
           <span>本期金流手續費率</span>
-          <strong>{display(result.paymentFeeRate)}</strong>
+          <strong>{display(activeResult.paymentFeeRate)}</strong>
           <p>這類費用通常不會被老闆第一時間感覺到，但它會直接降低實際留下來的淨利。</p>
         </div>
       </section>
@@ -300,31 +329,31 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
 
           <Chapter number="一" title="獲利結構分析" intro="獲利不是只看營收，而是看毛利、淨利與成本是否能留下錢。">
             <div className="pfm-metric-grid auto">
-              <MetricCard label="本月營收" value={money(result.totalRevenue)} />
-              <MetricCard label="毛利率" value={result.grossMargin} />
-              <MetricCard label="淨利率" value={result.netMargin} />
-              <MetricCard label="人事成本率" value={result.hrCostRate} />
-              <MetricCard label="租金率" value={result.rentRate} />
-              <MetricCard label="廣告率" value={result.adRate} />
-              <MetricCard label="金流手續費率" value={result.paymentFeeRate} />
+              <MetricCard label="本月營收" value={money(activeResult.totalRevenue)} />
+              <MetricCard label="毛利率" value={activeResult.grossMargin} />
+              <MetricCard label="淨利率" value={activeResult.netMargin} />
+              <MetricCard label="人事成本率" value={activeResult.hrCostRate} />
+              <MetricCard label="租金率" value={activeResult.rentRate} />
+              <MetricCard label="廣告率" value={activeResult.adRate} />
+              <MetricCard label="金流手續費率" value={activeResult.paymentFeeRate} />
             </div>
           </Chapter>
 
           <Chapter number="二" title="客戶經營分析" intro="回流、新客與介紹客的比例，會決定你是靠穩定經營，還是一直追新客。">
             <div className="pfm-metric-grid four">
-              <MetricCard label="新客率" value={result.newCustomerRate} />
-              <MetricCard label="介紹客比例" value={result.referralRate} />
-              <MetricCard label="客戶經營力" value={`${display(result.customerScore)} / 10`} />
-              <MetricCard label="客戶經營力評級" value={result.customerLevel} tone={statusTone(result.customerLevel)} />
+              <MetricCard label="新客率" value={activeResult.newCustomerRate} />
+              <MetricCard label="介紹客比例" value={activeResult.referralRate} />
+              <MetricCard label="客戶經營力" value={`${display(activeResult.customerScore)} / 10`} />
+              <MetricCard label="客戶經營力評級" value={activeResult.customerLevel} tone={statusTone(activeResult.customerLevel)} />
             </div>
           </Chapter>
 
           <Chapter number="三" title="流量與內容能力" intro="PFM 不鼓勵盲目投廣告，而是先看目前是否具備自然流量與內容經營基礎。">
             <div className="pfm-metric-grid four">
-              <MetricCard label="社群經營度" value={result.socialScore} />
-              <MetricCard label="內容執行力" value={result.contentScore} />
-              <MetricCard label="數位成熟度" value={result.digitalScore} />
-              <MetricCard label="數位成熟度評級" value={result.digitalLevel} tone={statusTone(result.digitalLevel)} />
+              <MetricCard label="社群經營度" value={activeResult.socialScore} />
+              <MetricCard label="內容執行力" value={activeResult.contentScore} />
+              <MetricCard label="數位成熟度" value={activeResult.digitalScore} />
+              <MetricCard label="數位成熟度評級" value={activeResult.digitalLevel} tone={statusTone(activeResult.digitalLevel)} />
             </div>
           </Chapter>
 
@@ -335,9 +364,9 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
             className="pfm-ad-chapter"
           >
             <div className="pfm-metric-grid three">
-              <MetricCard label="CPA" value={result.cpa} sub="每成交一位客人的廣告總成本" />
-              <MetricCard label="ROAS" value={result.roas} sub="每 1 元廣告成本創造的營收倍數" />
-              <MetricCard label="金流手續費率" value={result.paymentFeeRate} sub="非現金收款平台成本占營收比例" />
+              <MetricCard label="CPA" value={activeResult.cpa} sub="每成交一位客人的廣告總成本" />
+              <MetricCard label="ROAS" value={activeResult.roas} sub="每 1 元廣告成本創造的營收倍數" />
+              <MetricCard label="金流手續費率" value={activeResult.paymentFeeRate} sub="非現金收款平台成本占營收比例" />
             </div>
 
             <div className={`pfm-ad-insight tone-${statusTone(roasLevel)}`}>
@@ -351,26 +380,26 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
             <div className="pfm-narrative-grid">
               <div className="pfm-report-card">
                 <h3>目前狀態</h3>
-                <p>{display(result.currentStatus)}</p>
+                <p>{display(activeResult.currentStatus)}</p>
               </div>
               <div className="pfm-report-card">
                 <h3>成長機會</h3>
-                <p>{display(result.growthOpportunity)}</p>
+                <p>{display(activeResult.growthOpportunity)}</p>
               </div>
               <div className="pfm-report-card">
                 <h3>建議方向</h3>
-                <p>{display(result.suggestionDirection)}</p>
+                <p>{display(activeResult.suggestionDirection)}</p>
               </div>
             </div>
           </Chapter>
 
           <Chapter number="六" title="成長潛力雷達圖" intro="用五個面向快速看見目前店家的經營輪廓與下一步放大方向。">
             <div className="pfm-radar-layout">
-              <RadarChart result={result} />
+              <RadarChart result={activeResult} />
               <div className="pfm-report-card pfm-radar-summary">
                 <h3>成長潛力評級</h3>
-                <strong>{display(result.growthPotentialLevel)}</strong>
-                <p>{display(result.growthOpportunity)}</p>
+                <strong>{display(activeResult.growthPotentialLevel)}</strong>
+                <p>{display(activeResult.growthOpportunity)}</p>
               </div>
             </div>
           </Chapter>
@@ -379,9 +408,9 @@ export default function ResultDashboard({ result, formData = {}, onRestart }) {
             <StepCards items={actions} />
 
             <div className="pfm-final-consult no-print">
-              <p>{display(result.nextAction)}</p>
+              <p>{display(activeResult.nextAction)}</p>
               <a className="btn" href={BOOKING_URL || '#'} target="_blank" rel="noreferrer">
-                {display(result.bookingText, 'Line｜預約 PFM 一對一診斷')}
+                {display(activeResult.bookingText, 'Line｜預約 PFM 一對一診斷')}
               </a>
             </div>
           </Chapter>
