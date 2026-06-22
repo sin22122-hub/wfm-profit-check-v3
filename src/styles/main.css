@@ -1176,3 +1176,175 @@ select:focus {
     font-size: 20px;
   }
 }
+
+
+/* =========================================================
+   PFM Luxury Home V7.3 Final Requested Fixes
+   1. 四大面向移除數字後置中
+   2. 痛點與診斷預覽區塊降低高度
+   3. 底部桂冠葉與主標修正
+========================================================= */
+
+/* 四大面向：取消數字樣式保險、整體置中 */
+.pfm-lux-aspect-grid small {
+  display: none !important;
+}
+
+.pfm-lux-aspect-grid article {
+  min-height: 218px !important;
+  padding: 26px 22px 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: center !important;
+}
+
+.pfm-lux-aspect-grid .pfm-premium-icon-wrap {
+  margin: 0 auto 16px !important;
+}
+
+.pfm-lux-aspect-grid h3,
+.pfm-lux-aspect-grid p {
+  text-align: center !important;
+}
+
+.pfm-lux-aspect-grid h3 {
+  margin: 0 0 10px !important;
+}
+
+.pfm-lux-aspect-grid p {
+  max-width: 230px;
+  margin: 0 auto !important;
+  line-height: 1.65 !important;
+}
+
+/* 明明很忙區塊：卡片降低、文字粗細一致 */
+.pfm-lux-pain {
+  margin: 0 auto 46px !important;
+  padding: 24px 26px 28px !important;
+}
+
+.pfm-lux-pain h2 {
+  margin: 0 0 20px !important;
+}
+
+.pfm-lux-pain-grid article {
+  min-height: 118px !important;
+  padding: 18px 18px !important;
+  align-items: center !important;
+}
+
+.pfm-lux-pain-grid p {
+  font-size: 16px !important;
+  line-height: 1.62 !important;
+  font-weight: 500 !important;
+}
+
+.pfm-lux-pain-grid strong {
+  display: block !important;
+  font-weight: 700 !important;
+}
+
+.pfm-lux-pain-grid .pfm-gold-badge {
+  width: 48px !important;
+  height: 48px !important;
+  flex-basis: 48px !important;
+}
+
+.pfm-lux-pain-grid .pfm-gold-badge svg {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+/* 診斷預覽：內容不變，只降低卡片高度 */
+.pfm-lux-preview {
+  margin: 0 auto 38px !important;
+}
+
+.pfm-lux-preview-grid article {
+  min-height: 158px !important;
+  padding: 22px 18px !important;
+}
+
+.pfm-lux-preview-grid .pfm-gold-badge {
+  width: 50px !important;
+  height: 50px !important;
+  margin-bottom: 10px !important;
+}
+
+.pfm-lux-preview-grid .pfm-gold-badge svg {
+  width: 29px !important;
+  height: 29px !important;
+}
+
+.pfm-lux-preview-grid h3 {
+  margin: 0 0 6px !important;
+}
+
+.pfm-lux-preview-grid p {
+  line-height: 1.55 !important;
+}
+
+/* 底部 CTA / Proof：桂冠葉圓弧朝上 */
+.pfm-lux-proof {
+  min-height: 132px !important;
+  grid-template-columns: 170px 1fr 170px !important;
+  padding: 24px 44px !important;
+}
+
+.pfm-laurel-svg {
+  width: 150px !important;
+  height: 72px !important;
+  color: #e8c56c !important;
+  overflow: visible !important;
+  filter:
+    drop-shadow(0 0 8px rgba(216,174,78,.42))
+    drop-shadow(0 0 18px rgba(216,174,78,.16)) !important;
+}
+
+.pfm-lux-proof .pfm-laurel-svg:last-child {
+  transform: scaleX(-1) !important;
+}
+
+.pfm-lux-proof h2 {
+  margin: 0 0 8px !important;
+  color: #e8c56c !important;
+  font-size: clamp(22px, 2.4vw, 30px) !important;
+  line-height: 1.32 !important;
+  letter-spacing: .04em !important;
+}
+
+.pfm-lux-proof p {
+  letter-spacing: .08em !important;
+}
+
+@media (max-width: 960px) {
+  .pfm-lux-aspect-grid article {
+    min-height: auto !important;
+    padding: 24px 20px !important;
+  }
+
+  .pfm-lux-pain-grid article {
+    min-height: auto !important;
+    grid-template-columns: 48px 1fr !important;
+  }
+
+  .pfm-lux-preview-grid article {
+    min-height: auto !important;
+  }
+
+  .pfm-lux-proof {
+    grid-template-columns: 54px 1fr 54px !important;
+    padding: 22px 16px !important;
+  }
+
+  .pfm-laurel-svg {
+    width: 54px !important;
+    height: 44px !important;
+  }
+
+  .pfm-lux-proof h2 {
+    font-size: 19px !important;
+  }
+}
