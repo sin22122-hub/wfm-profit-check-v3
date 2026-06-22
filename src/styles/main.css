@@ -1348,3 +1348,50 @@ select:focus {
     font-size: 19px !important;
   }
 }
+
+/* =========================================================
+   PFM Luxury Final Micro Tune
+   依最新版本只微調：桂冠葉、四大面向高度、Hero視覺重心
+========================================================= */
+
+.pfm-lux-hero.pfm-v72-hero {
+  padding-top: 80px !important;
+}
+
+.pfm-lux-aspect-grid article {
+  min-height: 230px !important;
+}
+
+.pfm-laurel-svg {
+  width: 128px !important;
+  height: 72px !important;
+  color: #e8c56c !important;
+  overflow: visible !important;
+  opacity: .96 !important;
+  filter:
+    drop-shadow(0 0 10px rgba(216,174,78,.42))
+    drop-shadow(0 0 20px rgba(216,174,78,.18)) !important;
+}
+
+.pfm-laurel-arc {
+  opacity: .78;
+}
+
+.pfm-lux-proof .pfm-laurel-svg:last-child {
+  transform: scaleX(-1) !important;
+}
+
+@media (max-width: 960px) {
+  .pfm-lux-hero.pfm-v72-hero {
+    padding-top: 52px !important;
+  }
+
+  .pfm-lux-aspect-grid article {
+    min-height: auto !important;
+  }
+
+  .pfm-laurel-svg {
+    width: 56px !important;
+    height: 44px !important;
+  }
+}
