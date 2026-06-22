@@ -7,7 +7,7 @@ import roadmapIcon from '../assets/icons/growth-roadmap.png';
 
 function PremiumIcon({ src, alt }) {
   return (
-    <span className="pfm-premium-icon-wrap" aria-hidden="true">
+    <span className="pfm-premium-icon-wrap">
       <img src={src} alt={alt} className="pfm-premium-icon-img" />
     </span>
   );
@@ -121,19 +121,22 @@ export default function HomePage({ onStart }) {
           </p>
 
           <div className="pfm-lux-icon-row">
-            <div>
+            <div className="pfm-feature-item">
               <PremiumIcon src={diagnosisIcon} alt="專業診斷" />
               <span>專業診斷</span>
             </div>
-            <div>
+
+            <div className="pfm-feature-item">
               <PremiumIcon src={dataIcon} alt="數據分析" />
               <span>數據分析</span>
             </div>
-            <div>
+
+            <div className="pfm-feature-item">
               <PremiumIcon src={adviceIcon} alt="精準建議" />
               <span>精準建議</span>
             </div>
-            <div>
+
+            <div className="pfm-feature-item">
               <PremiumIcon src={roadmapIcon} alt="成長路徑" />
               <span>成長路徑</span>
             </div>
