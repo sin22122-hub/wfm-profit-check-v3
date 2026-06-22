@@ -5,9 +5,37 @@ import dataIcon from '../assets/icons/data-analysis.png';
 import adviceIcon from '../assets/icons/precision-advice.png';
 import roadmapIcon from '../assets/icons/growth-roadmap.png';
 
+const aspectCards = [
+  {
+    src: diagnosisIcon,
+    alt: '獲利能力分析',
+    title: '獲利能力分析',
+    text: '掌握營收、毛利與淨利，判斷店裡是不是真的有留下錢。',
+  },
+  {
+    src: dataIcon,
+    alt: '客戶經營洞察',
+    title: '客戶經營洞察',
+    text: '看見新客、回流與介紹客狀況，找出客源穩定度。',
+  },
+  {
+    src: adviceIcon,
+    alt: '成本結構檢視',
+    title: '成本結構檢視',
+    text: '拆解租金、人事、材料、金流與廣告成本，找出獲利黑洞。',
+  },
+  {
+    src: roadmapIcon,
+    alt: '成長策略建議',
+    title: '成長策略建議',
+    text: '依照數據結果，整理出下一步最該優先改善的方向。',
+  },
+];
+
 function PremiumIcon({ src, alt }) {
   return (
     <span className="pfm-premium-icon-wrap">
+      <span className="pfm-premium-icon-glow" />
       <img src={src} alt={alt} className="pfm-premium-icon-img" />
     </span>
   );
@@ -92,13 +120,26 @@ function GoldIcon({ type }) {
 
 function Laurel() {
   return (
-    <svg className="pfm-laurel-svg" viewBox="0 0 120 80" fill="none" aria-hidden="true">
-      <path d="M16 66C38 45 58 30 92 18" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-      <path d="M26 58C22 45 31 40 43 42C40 52 34 58 26 58Z" fill="currentColor" />
-      <path d="M39 48C34 35 43 29 56 31C53 43 48 49 39 48Z" fill="currentColor" />
-      <path d="M54 39C50 26 60 20 73 22C70 34 64 40 54 39Z" fill="currentColor" />
-      <path d="M70 30C67 18 77 12 90 14C86 25 80 31 70 30Z" fill="currentColor" />
-      <path d="M82 22C81 12 91 7 102 10C98 19 92 24 82 22Z" fill="currentColor" />
+    <svg
+      className="pfm-laurel-svg"
+      viewBox="0 0 140 82"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        className="pfm-laurel-arc"
+        d="M18 66 C38 36, 72 24, 118 44"
+        stroke="currentColor"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+
+      <ellipse cx="30" cy="55" rx="8" ry="4" transform="rotate(-42 30 55)" fill="currentColor" />
+      <ellipse cx="43" cy="45" rx="8" ry="4" transform="rotate(-32 43 45)" fill="currentColor" />
+      <ellipse cx="58" cy="38" rx="8" ry="4" transform="rotate(-20 58 38)" fill="currentColor" />
+      <ellipse cx="74" cy="35" rx="8" ry="4" transform="rotate(-8 74 35)" fill="currentColor" />
+      <ellipse cx="90" cy="37" rx="8" ry="4" transform="rotate(8 90 37)" fill="currentColor" />
+      <ellipse cx="106" cy="43" rx="8" ry="4" transform="rotate(22 106 43)" fill="currentColor" />
     </svg>
   );
 }
@@ -106,7 +147,7 @@ function Laurel() {
 export default function HomePage({ onStart }) {
   return (
     <main className="pfm-home-luxury">
-      <section className="pfm-lux-hero">
+      <section className="pfm-lux-hero pfm-v72-hero">
         <div className="pfm-lux-copy">
           <p className="pfm-lux-eyebrow">Profit Flow Management</p>
 
@@ -120,43 +161,36 @@ export default function HomePage({ onStart }) {
             快速找出影響營收與成長的關鍵問題。
           </p>
 
-          <div className="pfm-lux-icon-row">
-            <div className="pfm-feature-item">
-              <PremiumIcon src={diagnosisIcon} alt="專業診斷" />
-              <span>專業診斷</span>
-            </div>
-
-            <div className="pfm-feature-item">
-              <PremiumIcon src={dataIcon} alt="數據分析" />
-              <span>數據分析</span>
-            </div>
-
-            <div className="pfm-feature-item">
-              <PremiumIcon src={adviceIcon} alt="精準建議" />
-              <span>精準建議</span>
-            </div>
-
-            <div className="pfm-feature-item">
-              <PremiumIcon src={roadmapIcon} alt="成長路徑" />
-              <span>成長路徑</span>
-            </div>
-          </div>
-
-          <button className="btn pfm-lux-main-btn" onClick={onStart}>
+          <button className="btn pfm-lux-main-btn pfm-v72-main-btn" onClick={onStart}>
             立即開始免費健檢
           </button>
 
-          <p className="pfm-lux-scope">
-            適用：美容、美甲、美睫、美髮、紋繡、SPA等項目之工作室、小型店面與連鎖經營。
+          <p className="pfm-v72-scope">
+            <strong>適用對象</strong>
+            <span>個人工作室｜小型店面｜多人店面｜連鎖／多店</span>
           </p>
         </div>
 
-        <div className="pfm-lux-book-area">
+        <div className="pfm-lux-book-area pfm-v72-book-area">
           <img
             className="pfm-book-3d-img"
             src="/pfm-book-3d.webp"
             alt="PFM 美業獲利健檢報告"
           />
+        </div>
+      </section>
+
+      <section className="pfm-lux-aspects" id="pfm-aspects">
+        <div className="pfm-lux-title"><span />四大面向分析<span /></div>
+
+        <div className="pfm-lux-aspect-grid">
+          {aspectCards.map((card) => (
+            <article key={card.title}>
+              <PremiumIcon src={card.src} alt={card.alt} />
+              <h3>{card.title}</h3>
+              <p>{card.text}</p>
+            </article>
+          ))}
         </div>
       </section>
 
@@ -185,7 +219,7 @@ export default function HomePage({ onStart }) {
       <section className="pfm-lux-proof" id="pfm-faq">
         <Laurel />
         <div>
-          <h2>透過 PFM 找到你的成長突破點</h2>
+          <h2>不要再靠感覺經營，開始用數據看懂你的店。</h2>
           <p>數據驅動決策，讓努力更有價值</p>
         </div>
         <Laurel />
