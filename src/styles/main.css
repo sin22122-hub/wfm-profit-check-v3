@@ -2878,3 +2878,140 @@ select:focus {
     font-size: 20px !important;
   }
 }
+
+/* =========================================================
+   PFM Premium 3D Feature Icons Override
+   四大面向改用透明 PNG / 修正大小與手機版
+========================================================= */
+
+.pfm-lux-icon-row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: flex-start !important;
+  gap: 24px !important;
+  margin: 0 0 30px !important;
+}
+
+.pfm-lux-icon-row > .pfm-feature-item {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  min-width: 82px !important;
+  color: #e8c56c !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+}
+
+.pfm-lux-icon-row > .pfm-feature-item + .pfm-feature-item {
+  position: relative !important;
+}
+
+.pfm-lux-icon-row > .pfm-feature-item + .pfm-feature-item::before {
+  content: "" !important;
+  position: absolute !important;
+  left: -12px !important;
+  top: 8px !important;
+  width: 1px !important;
+  height: 58px !important;
+  background: linear-gradient(to bottom, transparent, rgba(216,174,78,.42), transparent) !important;
+}
+
+.pfm-premium-icon-wrap {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 76px !important;
+  height: 76px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.pfm-premium-icon-img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 76px !important;
+  max-height: 76px !important;
+  object-fit: contain !important;
+  background: transparent !important;
+  filter:
+    drop-shadow(0 8px 16px rgba(0,0,0,.24))
+    drop-shadow(0 0 12px rgba(216,174,78,.22)) !important;
+  transition: transform .28s ease, filter .28s ease !important;
+}
+
+.pfm-feature-item:hover .pfm-premium-icon-img {
+  transform: translateY(-4px) scale(1.06) !important;
+  filter:
+    drop-shadow(0 12px 22px rgba(0,0,0,.28))
+    drop-shadow(0 0 18px rgba(216,174,78,.34)) !important;
+}
+
+.pfm-feature-item > span {
+  margin: 0 !important;
+  color: #e8c56c !important;
+  font-size: 14px !important;
+  line-height: 1.2 !important;
+  letter-spacing: .08em !important;
+}
+
+/* 避免舊版 Hero SVG Icon 樣式誤套到四大面向 PNG */
+.pfm-lux-icon-row .pfm-feature-item .pfm-gold-badge {
+  display: none !important;
+}
+
+@media (max-width: 960px) {
+  .pfm-lux-icon-row {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    max-width: 320px !important;
+    gap: 18px 22px !important;
+    margin: 0 0 28px !important;
+  }
+
+  .pfm-lux-icon-row > .pfm-feature-item {
+    min-width: 0 !important;
+  }
+
+  .pfm-lux-icon-row > .pfm-feature-item + .pfm-feature-item::before {
+    display: none !important;
+  }
+
+  .pfm-premium-icon-wrap {
+    width: 62px !important;
+    height: 62px !important;
+  }
+
+  .pfm-premium-icon-img {
+    max-width: 62px !important;
+    max-height: 62px !important;
+  }
+
+  .pfm-feature-item > span {
+    font-size: 13px !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .pfm-lux-icon-row {
+    max-width: 290px !important;
+    gap: 16px 18px !important;
+  }
+
+  .pfm-premium-icon-wrap {
+    width: 58px !important;
+    height: 58px !important;
+  }
+
+  .pfm-premium-icon-img {
+    max-width: 58px !important;
+    max-height: 58px !important;
+  }
+}
