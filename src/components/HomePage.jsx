@@ -122,24 +122,24 @@ function Laurel() {
   return (
     <svg
       className="pfm-laurel-svg"
-      viewBox="0 0 180 86"
+      viewBox="0 0 140 82"
       fill="none"
       aria-hidden="true"
     >
       <path
         className="pfm-laurel-arc"
-        d="M18 64 C48 28, 73 18, 90 18 C107 18, 132 28, 162 64"
+        d="M18 66 C38 36, 72 24, 118 44"
         stroke="currentColor"
         strokeWidth="3"
         strokeLinecap="round"
       />
-      <ellipse cx="38" cy="54" rx="9" ry="4.5" transform="rotate(-38 38 54)" fill="currentColor" />
-      <ellipse cx="54" cy="41" rx="9" ry="4.5" transform="rotate(-28 54 41)" fill="currentColor" />
-      <ellipse cx="73" cy="31" rx="9" ry="4.5" transform="rotate(-14 73 31)" fill="currentColor" />
-      <ellipse cx="90" cy="27" rx="9" ry="4.5" fill="currentColor" />
-      <ellipse cx="107" cy="31" rx="9" ry="4.5" transform="rotate(14 107 31)" fill="currentColor" />
-      <ellipse cx="126" cy="41" rx="9" ry="4.5" transform="rotate(28 126 41)" fill="currentColor" />
-      <ellipse cx="142" cy="54" rx="9" ry="4.5" transform="rotate(38 142 54)" fill="currentColor" />
+
+      <ellipse cx="30" cy="55" rx="8" ry="4" transform="rotate(-42 30 55)" fill="currentColor" />
+      <ellipse cx="43" cy="45" rx="8" ry="4" transform="rotate(-32 43 45)" fill="currentColor" />
+      <ellipse cx="58" cy="38" rx="8" ry="4" transform="rotate(-20 58 38)" fill="currentColor" />
+      <ellipse cx="74" cy="35" rx="8" ry="4" transform="rotate(-8 74 35)" fill="currentColor" />
+      <ellipse cx="90" cy="37" rx="8" ry="4" transform="rotate(8 90 37)" fill="currentColor" />
+      <ellipse cx="106" cy="43" rx="8" ry="4" transform="rotate(22 106 43)" fill="currentColor" />
     </svg>
   );
 }
