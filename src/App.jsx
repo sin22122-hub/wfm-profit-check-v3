@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import HomePage from './components/HomePage.jsx';
 import AssessmentForm from './components/AssessmentForm.jsx';
@@ -8,13 +8,53 @@ import { questions } from './data/questions.js';
 import { submitToGoogleForm } from './utils/googleFormApi.js';
 import { fetchDashboardData } from './utils/sheetApi.js';
 
+const PFM_REPORT_STORAGE_KEY = 'pfm_latest_report_v1';
+
+const saveReportToStorage = (payload) => {
+  try {
+    localStorage.setItem(PFM_REPORT_STORAGE_KEY, JSON.stringify(payload));
+  } catch (error) {
+    console.warn('PFM report storage save failed:', error);
+  }
+};
+
+const readReportFromStorage = () => {
+  try {
+    const raw = localStorage.getItem(PFM_REPORT_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    console.warn('PFM report storage read failed:', error);
+    return null;
+  }
+};
+
+const clearReportStorage = () => {
+  try {
+    localStorage.removeItem(PFM_REPORT_STORAGE_KEY);
+  } catch (error) {
+    console.warn('PFM report storage clear failed:', error);
+  }
+};
+
 export default function App() {
   const [view, setView] = useState('home');
   const [result, setResult] = useState(null);
   const [formData, setFormData] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  useEffect(() => {
+    const savedReport = readReportFromStorage();
+
+    if (savedReport?.result) {
+      setResult(savedReport.result);
+      setFormData(savedReport.formData || {});
+      setView('result');
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  }, []);
+
   const startAssessment = () => {
+    clearReportStorage();
     setView('form');
     setResult(null);
     setFormData({});
@@ -22,8 +62,10 @@ export default function App() {
   };
 
   const goHome = () => {
+    clearReportStorage();
     setView('home');
     setResult(null);
+    setFormData({});
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -79,7 +121,15 @@ export default function App() {
         return;
       }
 
-      setFormData({ ...data, submissionId: submitResult.submissionId });
+      const nextFormData = { ...data, submissionId: submitResult.submissionId };
+
+      saveReportToStorage({
+        result: sheetResult,
+        formData: nextFormData,
+        savedAt: new Date().toISOString(),
+      });
+
+      setFormData(nextFormData);
       setResult(sheetResult);
       setView('result');
       window.scrollTo({ top: 0, behavior: 'smooth' });
