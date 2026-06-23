@@ -184,8 +184,8 @@ export default function ResultDashboard({ result = {}, formData = {}, onRestart 
   const digitalScore = safeNumber(pick(data.digitalScore, data.digitalMaturityScore, data['數位成熟度']));
   const digitalGrade = pick(data.digitalGrade, data.digitalMaturityGrade, data['數位成熟度評級'], gradeByHigherBetter(digitalScore, 70, 50, 30));
 
-  const overallScore = safeNumber(pick(data.newOverallScore, data.overallScore, data.growthStageScore, data['新版綜合分數'], data['成長階段綜合分數']));
-  const growthStage = pick(data.newGrowthStage, data.growthStage, data.storeGrowthStage, data['新版成長階段'], data['店家成長階段'], '建構期');
+  const overallScore = safeNumber(pick(data.newOverallScore, data.raw?.B50, data.overallScore, data.growthStageScore, data['新版綜合分數'], data['成長階段綜合分數']));
+  const growthStage = pick(data.newGrowthStage, data.raw?.B51, data.growthStage, data.storeGrowthStage, data['新版成長階段'], data['店家成長階段'], '建構期');
 
   const problem1 = pick(data.problem1, data['問題1'], '回流率偏低');
   const problem2 = pick(data.problem2, data['問題2'], '客戶經營力不足');
@@ -211,10 +211,10 @@ export default function ResultDashboard({ result = {}, formData = {}, onRestart 
   const roasGrade = roas >= 8 ? '優秀' : roas >= 5 ? '良好' : roas >= 3 ? '注意' : '偏低';
 
   const radarScores = useMemo(() => {
-    const profitScore = safeNumber(pick(data.profitScore, data['獲利能力分數']), Math.round((safeNumber(grossMargin) + safeNumber(netMargin)) / 2));
-    const customerScore = safeNumber(pick(data.customerMaturityScore, data['客戶經營成熟度分數']), Math.round((returningRate + referralRate + customerPower * 10) / 3));
-    const trafficScore = safeNumber(pick(data.trafficContentScore, data['流量內容成熟度分數']), Math.round((socialScore + contentScore + digitalScore) / 3));
-    const conversionScore = safeNumber(pick(data.adConversionScore, data['廣告轉換效率分數']), Math.round((Math.min(roas, 10) * 10 + (cpa > 0 ? Math.max(0, 100 - cpa / 40) : 30)) / 2));
+    const profitScore = safeNumber(pick(data.profitScore, data.raw?.B46, data['獲利能力分數']), Math.round((safeNumber(grossMargin) + safeNumber(netMargin)) / 2));
+    const customerScore = safeNumber(pick(data.customerMaturityScore, data.raw?.B47, data['客戶經營成熟度分數']), Math.round((returningRate + referralRate + customerPower * 10) / 3));
+    const trafficScore = safeNumber(pick(data.trafficContentScore, data.raw?.B48, data['流量內容成熟度分數']), Math.round((socialScore + contentScore + digitalScore) / 3));
+    const conversionScore = safeNumber(pick(data.adConversionScore, data.raw?.B49, data['廣告轉換效率分數']), Math.round((Math.min(roas, 10) * 10 + (cpa > 0 ? Math.max(0, 100 - cpa / 40) : 30)) / 2));
     return {
       profit: profitScore,
       customer: customerScore,
@@ -251,7 +251,7 @@ export default function ResultDashboard({ result = {}, formData = {}, onRestart 
           <MetricCard icon="📈" label="淨利率" value={fmtPercent(netMargin)} grade={netGrade} desc="真正留下的獲利能力。" tip="淨利率是能否持續成長的核心，數值越穩定代表經營體質越健康。" />
           <MetricCard icon="🔁" label="回流率" value={fmtPercent(returningRate)} grade={returnGrade} desc="顧客再次消費比例。" tip="回流率是美業獲利關鍵，建議持續建立固定回訪與會員機制。" />
           <MetricCard icon="💳" label="客單價" value={fmtMoney(avgTicket)} grade={avgTicketGrade} desc="單次消費金額與服務價值。" tip="客單價反映服務價值與組合設計，可搭配加購與套票提升。" />
-          <MetricCard icon="🏦" label="金流手續費率" value={fmtPercent(paymentFeeRate)} grade={feeGrade} desc="隱形成本占營收比例。" tip="金流費用不一定會被第一時間感覺到，但會直接影響實際留下來的淨利。" />
+          <MetricCard icon="🏦" label="金流手續費率" value={fmtPercent(paymentFeeRate)} grade={feeGrade} desc="非現金收款平台成本占營收比例。" tip="金流費用不一定會被第一時間感覺到，但會直接影響實際留下來的淨利。" />
         </div>
       </Section>
 
