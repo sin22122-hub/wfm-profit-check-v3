@@ -796,3 +796,387 @@
     box-shadow: none !important;
   }
 }
+
+/* =========================================================
+   PFM Result Page V16 Typography / Spacing Refinement
+   只壓結果頁字級、間距與第四章/雷達圖/CTA，不動首頁
+========================================================= */
+
+.pfm-result-page.pfm-v15-report {
+  width: min(1120px, calc(100% - 32px));
+  margin: 36px auto 72px;
+}
+
+.pfm-v15-cover {
+  padding: 38px 40px;
+  min-height: auto;
+  gap: 28px;
+}
+
+.pfm-v15-cover-copy h1 {
+  font-size: clamp(36px, 4.2vw, 60px);
+  line-height: 1.12;
+  letter-spacing: -.035em;
+}
+
+.pfm-v15-cover-copy > p:not(.pfm-v15-eyebrow) {
+  font-size: 1.02rem;
+  line-height: 1.75;
+}
+
+.pfm-v15-score-panel {
+  min-height: 230px;
+  padding: 26px;
+}
+
+.pfm-v15-score-panel strong {
+  font-size: clamp(44px, 5vw, 68px);
+  margin: 8px 0 12px;
+}
+
+.pfm-v15-score-panel div {
+  width: 104px;
+  height: 104px;
+  font-size: 1.95rem;
+}
+
+.pfm-v15-section,
+.pfm-v15-blueprint,
+.pfm-v15-blueprint-nav,
+.pfm-v15-unlock,
+.pfm-v15-hidden-cost {
+  padding: 30px;
+  margin-bottom: 20px;
+  border-radius: 26px;
+}
+
+.pfm-v15-section-head {
+  margin-bottom: 20px;
+}
+
+.pfm-v15-section-head h2,
+.pfm-v15-hidden-cost h2,
+.pfm-v15-unlock h2,
+.pfm-v15-blueprint-nav h2,
+.pfm-v15-cta h3 {
+  font-size: clamp(26px, 2.15vw, 36px);
+  line-height: 1.24;
+}
+
+.pfm-v15-section-head p,
+.pfm-v15-blueprint-nav p,
+.pfm-v15-rank-card p,
+.pfm-v15-finding p,
+.pfm-v15-hidden-cost p,
+.pfm-v15-unlock p,
+.pfm-v15-cta p,
+.pfm-v15-consult-grid p,
+.pfm-v15-roadmap-step p,
+.pfm-v15-ad-insight p,
+.pfm-v15-radar-summary p,
+.pfm-v15-radar-summary span {
+  font-size: .95rem;
+  line-height: 1.72;
+}
+
+.pfm-v15-metric-grid {
+  gap: 14px;
+}
+
+.pfm-v15-metric-grid.auto {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.pfm-v15-metric {
+  padding: 16px;
+  min-height: 150px;
+}
+
+.pfm-v15-card-top {
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.pfm-v15-icon {
+  width: 34px;
+  height: 34px;
+  flex-basis: 34px;
+  border-radius: 12px;
+  font-size: 1rem;
+}
+
+.pfm-v15-card-top p {
+  font-size: .98rem;
+  line-height: 1.25;
+}
+
+.pfm-v15-card-top em {
+  margin-top: 4px;
+  padding: 2px 7px;
+  font-size: .72rem;
+}
+
+.pfm-v15-metric strong {
+  font-size: clamp(26px, 2.55vw, 38px);
+  line-height: 1.06;
+  letter-spacing: -.025em;
+  white-space: normal;
+  word-break: keep-all;
+}
+
+.pfm-v15-metric small {
+  margin-top: 10px;
+  font-size: .84rem;
+  line-height: 1.55;
+}
+
+.pfm-v15-split-grid {
+  gap: 20px;
+}
+
+.pfm-v15-rank-card {
+  grid-template-columns: 42px 1fr;
+  gap: 14px;
+  padding: 14px 16px;
+}
+
+.pfm-v15-rank-card span {
+  width: 38px;
+  height: 38px;
+  font-size: .95rem;
+}
+
+.pfm-v15-rank-card strong {
+  font-size: 1.02rem;
+}
+
+.pfm-v15-hidden-cost {
+  padding: 36px 40px;
+  grid-template-columns: 1.2fr .7fr;
+}
+
+.pfm-v15-hidden-number {
+  padding: 24px;
+}
+
+.pfm-v15-hidden-number strong {
+  font-size: clamp(44px, 5vw, 72px);
+}
+
+.pfm-v16-funnel-note {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--pfm-line);
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(90,8,21,.035), rgba(214,167,70,.07));
+}
+
+.pfm-v16-funnel-note strong {
+  color: var(--pfm-wine);
+  margin-right: 6px;
+}
+
+.pfm-v16-funnel-note span {
+  color: var(--pfm-ink);
+  font-weight: 800;
+}
+
+.pfm-v16-funnel-note b {
+  color: var(--pfm-gold);
+}
+
+.pfm-v16-funnel-note p {
+  flex-basis: 100%;
+  margin: 2px 0 0;
+  color: var(--pfm-muted);
+  font-size: .9rem;
+  line-height: 1.55;
+}
+
+.pfm-v15-ad-insight {
+  padding: 22px 24px;
+  border-radius: 20px;
+}
+
+.pfm-v15-ad-insight strong {
+  font-size: clamp(32px, 4vw, 46px);
+}
+
+.pfm-v16-radar-layout {
+  grid-template-columns: minmax(420px, .95fr) minmax(300px, .65fr);
+  gap: 24px;
+}
+
+.pfm-v15-radar-card {
+  min-height: 420px;
+}
+
+.pfm-v15-radar-svg {
+  width: min(340px, 82%);
+}
+
+.pfm-v15-radar-label {
+  font-size: .86rem;
+}
+
+.pfm-v16-radar-summary {
+  padding: 28px;
+  min-height: 220px;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.pfm-v16-radar-summary strong {
+  font-size: clamp(40px, 5vw, 58px);
+}
+
+.pfm-v16-radar-source {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.pfm-v16-radar-source article {
+  min-width: 0;
+  padding: 12px 12px;
+  border: 1px solid var(--pfm-line);
+  border-radius: 16px;
+  background: rgba(255,253,248,.72);
+}
+
+.pfm-v16-radar-source strong {
+  display: block;
+  color: var(--pfm-wine);
+  font-size: .92rem;
+  margin-bottom: 4px;
+}
+
+.pfm-v16-radar-source span {
+  display: block;
+  color: var(--pfm-muted);
+  font-size: .78rem;
+  line-height: 1.45;
+}
+
+.pfm-v15-roadmap-step {
+  grid-template-columns: 58px 1fr;
+  gap: 16px;
+  padding: 18px 20px;
+}
+
+.pfm-v15-step-number {
+  width: 48px;
+  height: 48px;
+  font-size: 1.08rem;
+}
+
+.pfm-v15-consult-grid article {
+  padding: 20px;
+}
+
+.pfm-v16-cta {
+  padding: 26px 28px;
+  border-radius: 24px;
+}
+
+.pfm-v16-cta h3 {
+  max-width: 860px;
+  margin: 0 auto 12px;
+  font-size: clamp(28px, 3vw, 42px) !important;
+  line-height: 1.32 !important;
+  letter-spacing: -.02em;
+}
+
+.pfm-v16-cta p {
+  max-width: 820px;
+  margin: 0 auto 18px;
+  font-size: .98rem;
+}
+
+.pfm-v16-cta .btn {
+  min-width: 260px;
+  padding: 12px 24px;
+}
+
+@media (max-width: 1080px) {
+  .pfm-v15-metric-grid.five,
+  .pfm-v16-radar-source {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pfm-v16-radar-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .pfm-result-page.pfm-v15-report {
+    width: min(100% - 18px, 440px);
+    margin: 18px auto 56px;
+  }
+
+  .pfm-v15-cover,
+  .pfm-v15-section,
+  .pfm-v15-hidden-cost,
+  .pfm-v15-blueprint-nav,
+  .pfm-v15-unlock,
+  .pfm-v15-blueprint {
+    padding: 20px;
+    border-radius: 22px;
+  }
+
+  .pfm-v15-cover-copy h1 {
+    font-size: 28px;
+  }
+
+  .pfm-v15-score-panel strong {
+    font-size: 44px;
+  }
+
+  .pfm-v15-score-panel div {
+    width: 96px;
+    height: 96px;
+    font-size: 1.75rem;
+  }
+
+  .pfm-v15-section-head h2,
+  .pfm-v15-hidden-cost h2,
+  .pfm-v15-unlock h2,
+  .pfm-v15-blueprint-nav h2 {
+    font-size: 27px;
+  }
+
+  .pfm-v15-metric-grid.five,
+  .pfm-v15-metric-grid.four,
+  .pfm-v15-metric-grid.three,
+  .pfm-v16-radar-source {
+    grid-template-columns: 1fr;
+  }
+
+  .pfm-v15-metric {
+    min-height: auto;
+  }
+
+  .pfm-v15-hidden-cost {
+    grid-template-columns: 1fr;
+  }
+
+  .pfm-v15-radar-card {
+    min-height: 360px;
+  }
+
+  .pfm-v15-radar-svg {
+    width: min(300px, 82%);
+  }
+
+  .pfm-v16-cta h3 {
+    font-size: 26px !important;
+  }
+}
