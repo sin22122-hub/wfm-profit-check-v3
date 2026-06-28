@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { executiveSummary, getProblemAdvice, getStrengthAdvice } from '../data/pfmKnowledge.js';
 
 function safeNumber(value, fallback = 0) {
   const n = Number(String(value ?? '').replace(/[$,%\s,]/g, ''));
@@ -24,6 +25,41 @@ function pick(...values) {
   return values.find((v) => v !== undefined && v !== null && String(v).trim() !== '') ?? '';
 }
 
+function cell(data, address) {
+  if (!data || !address) return undefined;
+  const key = String(address).toUpperCase();
+  return pick(
+    data?.raw?.[key],
+    data?.cells?.[key],
+    data?.dashboardData?.[key],
+    data?.cell?.[key],
+    data?.[key],
+    data?.[`Dashboard_Data!${key}`]
+  );
+}
+
+function rowValue(data, rowNumber) {
+  const rows = data?.rows || data?.values || data?.dashboardRows;
+  if (!Array.isArray(rows)) return undefined;
+  const row = rows[rowNumber - 1];
+  if (!Array.isArray(row)) return undefined;
+  return row[1];
+}
+
+function kpiValue(data, label) {
+  if (!data || !label) return undefined;
+  const direct = pick(data[label], data?.kpi?.[label], data?.dashboard?.[label]);
+  if (direct !== '') return direct;
+
+  const rows = data?.rows || data?.values || data?.dashboardRows;
+  if (Array.isArray(rows)) {
+    const found = rows.find((row) => Array.isArray(row) && String(row[0] ?? '').trim() === label);
+    if (found) return found[1];
+  }
+
+  return undefined;
+}
+
 function gradeByHigherBetter(value, excellent, good, caution) {
   const n = safeNumber(value);
   if (n >= excellent) return '優秀';
@@ -45,6 +81,102 @@ function gradeClass(grade) {
   if (grade === '良好' || grade === '穩定') return 'is-good';
   if (grade === '注意' || grade === '普通') return 'is-caution';
   return 'is-weak';
+}
+
+function ratingLabel(stars = '') {
+  const count = String(stars || '').split('★').length - 1;
+  if (count >= 5) return '極高';
+  if (count >= 4) return '高';
+  if (count >= 3) return '中';
+  if (count >= 2) return '低';
+  return '觀察';
+}
+
+function confidenceScore({ totalRevenue, grossMargin, netMargin, returningRate, referralRate, socialScore, contentScore, digitalScore, roas, cpa }) {
+  const fields = [totalRevenue, grossMargin, netMargin, returningRate, referralRate, socialScore, contentScore, digitalScore, roas, cpa];
+  const validCount = fields.filter((v) => Number.isFinite(Number(v)) && Number(v) !== 0).length;
+  const base = 68 + Math.min(24, validCount * 3);
+  return Math.max(72, Math.min(96, Math.round(base)));
+}
+
+function confidenceGrade(score) {
+  const s = safeNumber(score);
+  if (s >= 90) return '診斷可信度：高';
+  if (s >= 82) return '診斷可信度：良好';
+  if (s >= 74) return '診斷可信度：中等';
+  return '診斷可信度：建議補充資料';
+}
+
+function capabilityGrade(score) {
+  const s = safeNumber(score);
+  if (s >= 80) return '優秀';
+  if (s >= 65) return '良好';
+  if (s >= 45) return '普通';
+  return '需加強';
+}
+
+function capabilityClass(score) {
+  const grade = capabilityGrade(score);
+  if (grade === '優秀') return 'is-excellent';
+  if (grade === '良好') return 'is-good';
+  if (grade === '普通') return 'is-caution';
+  return 'is-weak';
+}
+
+function capabilityMeta(key, score, context = {}) {
+  const s = Math.round(Math.max(0, Math.min(100, safeNumber(score))));
+  const data = {
+    profit: {
+      icon: '💰',
+      title: '獲利能力',
+      focus: ['毛利率', '淨利率', '成本結構', '固定費用'],
+      advice: s < 45 ? '先讓每一筆營收真正留下來，再追求更大的營收規模。' : '獲利基礎已逐步形成，下一步可優化成本與高價值服務組合。',
+    },
+    customer: {
+      icon: '👥',
+      title: '客戶經營',
+      focus: ['新客率', '回流率', '介紹客', '會員經營'],
+      advice: s < 45 ? '先建立回訪提醒與顧客標籤，降低對新客流量的依賴。' : '客戶經營已有基礎，可進一步放大回流、會員與轉介紹機制。',
+    },
+    traffic: {
+      icon: '📣',
+      title: '流量能力',
+      focus: ['社群經營', '內容執行', '自然曝光', '數位成熟'],
+      advice: s < 45 ? '先建立穩定內容節奏，讓潛在顧客看懂服務價值。' : '內容與流量已有基礎，建議把高互動內容轉成預約入口。',
+    },
+    conversion: {
+      icon: '🎯',
+      title: '轉換能力',
+      focus: ['CPA', 'ROAS', '成交承接', '金流成本'],
+      advice: s < 45 ? '先檢查從詢問到預約的流失點，不要急著加大廣告。' : '轉換效率已有基礎，可持續優化素材、受眾與成交流程。',
+    },
+    brand: {
+      icon: '💎',
+      title: '品牌成熟',
+      focus: ['預約流程', '顧客資料', '數位系統', '品牌節奏'],
+      advice: s < 45 ? '先把預約、回訪與顧客資料管理流程固定下來。' : '品牌成熟度具備基礎，下一步可建立更穩定的系統化經營節奏。',
+    },
+  };
+  const item = data[key] || data.profit;
+  return { ...item, key, score: s, grade: capabilityGrade(s), className: capabilityClass(s) };
+}
+
+function CapabilityCard({ item, compact = false }) {
+  return (
+    <article className={`pfm-v22-capability-card ${item.className} ${compact ? 'is-compact' : ''}`.trim()}>
+      <div className="pfm-v22-capability-head">
+        <span>{item.icon}</span>
+        <div>
+          <h4>{item.title}</h4>
+          <b>{item.grade}</b>
+        </div>
+        <strong>{item.score}<small>/100</small></strong>
+      </div>
+      <div className="pfm-v22-capability-bar"><i style={{ width: `${Math.max(4, Math.min(100, item.score))}%` }} /></div>
+      <p className="pfm-v22-capability-focus"><em>評估重點：</em>{item.focus.join('、')}</p>
+      <p className="pfm-v22-capability-advice">{item.advice}</p>
+    </article>
+  );
 }
 
 function IconBadge({ icon }) {
@@ -136,10 +268,8 @@ function overviewFindings({ profitGrade, netGrade, returnGrade, avgTicketGrade, 
     findings.push(`回流率 ${fmtPercent(returningRate)} 仍有提升空間，建議建立固定回訪、會員標籤與再購提醒。`);
   }
 
-  if (avgTicketGrade === '待改善' || avgTicketGrade === '注意') {
-    findings.push(`客單價 ${fmtMoney(avgTicket)} 偏低，建議透過加購、套票、療程組合或高價值服務設計提升單次消費。`);
-  } else {
-    findings.push(`客單價 ${fmtMoney(avgTicket)} 表現穩定，可持續放大高價值服務與組合方案。`);
+  if (paymentFeeRate > 0) {
+    findings.push(`金流手續費率 ${fmtPercent(paymentFeeRate)} 會直接影響實際留下來的淨利，建議同步檢視收款結構。`);
   }
 
   if (feeGrade === '待改善' || feeGrade === '注意') {
@@ -149,75 +279,9 @@ function overviewFindings({ profitGrade, netGrade, returnGrade, avgTicketGrade, 
   return findings;
 }
 
-function includesAny(text, keywords) {
-  const source = String(text || '');
-  return keywords.some((keyword) => source.includes(keyword));
-}
-
 
 function problemAdvice(problem, index = 0) {
-  const item = String(problem || '');
-  if (includesAny(item, ['淨利', '固定費', '租金', '人事'])) {
-    return {
-      summary: '實際留下來的利潤偏低，代表營收雖然進來，但可能被租金、人事、行銷或其他固定費用稀釋。',
-      risk: '營收上升時不一定能同步轉成獲利，一遇到淡季或成本增加，現金壓力會被放大。',
-      action: '先列出固定費用、租金、人事與行銷支出占比，找出最容易調整的獲利缺口。',
-    };
-  }
-  if (includesAny(item, ['毛利', '耗材', '直接成本', '定價'])) {
-    return {
-      summary: '服務本身的定價或直接成本結構出現壓力，代表每做一筆服務留下來的毛利不夠穩。',
-      risk: '即使客量增加，若單次服務毛利不足，會越忙越累，卻不一定真正賺到錢。',
-      action: '先盤點高耗材、高工時、低毛利項目，重新檢查定價、材料成本與服務組合。',
-    };
-  }
-  if (includesAny(item, ['回流', '老客', '再訪'])) {
-    return {
-      summary: '老客再次消費比例不足，代表會員經營、回訪提醒或再購流程尚未形成穩定循環。',
-      risk: '若持續依賴新客，廣告與流量成本會逐月墊高，營收也容易出現波動。',
-      action: '先建立 30 天回訪提醒、會員標籤與固定再購方案。',
-    };
-  }
-  if (includesAny(item, ['客戶經營', '會員', '顧客經營'])) {
-    return {
-      summary: '顧客互動與關係經營深度不足，代表顧客資料、標籤與回訪節奏還沒有被系統化。',
-      risk: '容易讓回購、轉介紹與長期營收變得不穩，也會提高對新客流量的依賴。',
-      action: '先建立顧客分級、回訪紀錄與固定關懷節奏。',
-    };
-  }
-  if (includesAny(item, ['廣告', 'CPA', '獲客', '投放'])) {
-    return {
-      summary: '流量取得成本偏高，表示素材、受眾、服務頁或成交承接流程需要重新檢視。',
-      risk: '若直接加碼預算，可能只是放大浪費，讓每一位成交客的取得成本持續升高。',
-      action: '先比對 CPA、客單價與 ROAS，找出是素材、受眾還是成交流程造成流失。',
-    };
-  }
-  if (includesAny(item, ['金流', '手續費', '平台'])) {
-    return {
-      summary: '非現金收款成本正在侵蝕淨利，若沒有定期追蹤，很容易變成隱形流失。',
-      risk: '交易量越大，手續費累積越高，會直接壓縮年度實際留下來的利潤。',
-      action: '先檢視支付工具、平台費率與非現金收款比例，確認是否需要調整收款結構。',
-    };
-  }
-  if (includesAny(item, ['社群', '內容', '流量', '曝光'])) {
-    return {
-      summary: '自然流量與內容承接仍不穩定，代表目前曝光來源還沒有形成可預期的節奏。',
-      risk: '若沒有固定內容資產，未來會更依賴廣告、活動或熟客介紹。',
-      action: '先建立每週固定內容節奏，累積服務案例、顧客見證與預約入口。',
-    };
-  }
-  if (includesAny(item, ['無明顯', '目前無'])) {
-    return {
-      summary: '目前沒有明顯單一風險，但仍需要持續追蹤獲利、回流與金流成本。',
-      risk: '若沒有固定檢查節奏，問題可能在成長後才一次浮現。',
-      action: '先設定每月固定追蹤毛利率、淨利率、回流率與金流手續費率。',
-    };
-  }
-  return {
-    summary: '這項問題會影響獲利穩定度，建議先釐清它與營收、成本、顧客回流之間的關係。',
-    risk: '若沒有轉成可追蹤指標，容易一直知道問題，卻沒有真正改善。',
-    action: '先設定一個 30 天內可以追蹤的改善指標，並安排第一個執行動作。',
-  };
+  return getProblemAdvice(problem, index);
 }
 
 function problemConsultantText(problem, index) {
@@ -225,68 +289,7 @@ function problemConsultantText(problem, index) {
 }
 
 function strengthAdvice(strength, index = 0) {
-  const item = String(strength || '');
-  if (includesAny(item, ['毛利'])) {
-    return {
-      summary: '代表目前定價與直接成本控制具備基礎，服務本身有留下毛利的能力。',
-      leverage: '可優先放大高價值服務、套票或療程組合，讓毛利優勢轉成更穩定的營收。',
-      action: '先整理毛利最高的 3 個服務項目，設計加購、套票或升級方案。',
-    };
-  }
-  if (includesAny(item, ['淨利'])) {
-    return {
-      summary: '代表實際留下的利潤狀態相對健康，具備再投入會員經營、內容與團隊分工的空間。',
-      leverage: '可將多出來的利潤投入在回流、內容或流程優化，讓獲利不只停留在當下。',
-      action: '先決定一筆固定預算，投入會員回訪或高價值顧客經營。',
-    };
-  }
-  if (includesAny(item, ['介紹', '口碑', '轉介紹'])) {
-    return {
-      summary: '代表顧客信任度與服務滿意度具備基礎，已經有自然口碑的種子。',
-      leverage: '可設計轉介紹獎勵、顧客見證與案例內容，讓口碑變成可複製的流程。',
-      action: '先整理近期滿意顧客名單，設計一個低門檻轉介紹邀請。',
-    };
-  }
-  if (includesAny(item, ['回流', '老客', '再訪'])) {
-    return {
-      summary: '代表顧客願意再次消費，這是美業最重要的穩定獲利基礎。',
-      leverage: '可進一步設計會員分級、週期提醒與再購方案，提高顧客終身價值。',
-      action: '先把老客依最近消費時間分組，建立固定回訪節奏。',
-    };
-  }
-  if (includesAny(item, ['客單', '高單價'])) {
-    return {
-      summary: '代表服務價值與消費承接能力不錯，顧客願意為更高價值的方案付費。',
-      leverage: '可持續優化高價值方案、加購設計與療程組合，提高單次消費效率。',
-      action: '先檢查目前最高客單組合，整理成標準銷售話術與頁面呈現。',
-    };
-  }
-  if (includesAny(item, ['社群', '內容', '流量'])) {
-    return {
-      summary: '代表目前已具備自然曝光基礎，內容有機會成為穩定獲客入口。',
-      leverage: '可把內容轉成預約入口、顧客案例與服務教育資產，降低長期獲客成本。',
-      action: '先選出互動最高的 5 篇內容，延伸成預約導向的系列貼文。',
-    };
-  }
-  if (includesAny(item, ['廣告', 'ROAS', '轉換'])) {
-    return {
-      summary: '代表投放或成交承接已有基礎，能將流量轉成營收。',
-      leverage: '可把有效素材、受眾與成交流程標準化，避免每次重新摸索。',
-      action: '先整理目前最高 ROAS 的素材與受眾，建立廣告素材清單。',
-    };
-  }
-  if (includesAny(item, ['無明顯', '目前無'])) {
-    return {
-      summary: '目前沒有足夠明確的優勢訊號，代表需要先建立可追蹤的正向指標。',
-      leverage: '可先從毛利、回流、介紹與內容穩定度中，選一個最容易形成優勢的項目。',
-      action: '先設定 30 天內最想放大的單一指標，避免同時分散在太多方向。',
-    };
-  }
-  return {
-    summary: '這項優勢是下一階段成長支點，建議把它標準化，讓它不只依賴個人經驗。',
-    leverage: '可轉成流程、話術、內容或會員制度，形成可複製的經營資產。',
-    action: '先定義這項優勢背後的成功做法，並整理成可重複執行的流程。',
-  };
+  return getStrengthAdvice(strength, index);
 }
 
 function strengthConsultantText(strength, index) {
@@ -377,10 +380,12 @@ function RadarChart({ scores }) {
       <polygon points={polygon} className="pfm-v17-radar-area" />
       <polyline points={`${polygon} ${polygon.split(' ')[0]}`} className="pfm-v17-radar-line" />
       {labels.map((item, index) => {
-        const [x, y] = pointFor(index, 100, 42);
+        const value = Math.round(Math.max(0, Math.min(100, safeNumber(scores[item.key]))));
+        const [x, y] = pointFor(index, 100, 48);
         return (
           <text key={item.key} x={x} y={y} textAnchor="middle" dominantBaseline="middle" className="pfm-v17-radar-label">
-            {item.text}
+            <tspan x={x} dy="-0.35em">{item.text}</tspan>
+            <tspan x={x} dy="1.35em" className="pfm-v17-radar-score">{value}分</tspan>
           </text>
         );
       })}
@@ -409,13 +414,19 @@ export default function ResultDashboard({ result = {}, formData = {}, onRestart 
   const roas = safeNumber(pick(data.roas, data.ROAS));
   const newCustomerRate = safeNumber(pick(data.newCustomerRate, data.newRate, data['新客率']));
   const referralRate = safeNumber(pick(data.referralRate, data.introductionRate, data['介紹客比例']));
-  const customerPower = safeNumber(pick(data.customerPower, data.customerManagementPower, data['客戶經營力']));
+  const customerPower = safeNumber(pick(data.customerPower, data.customerManagementPower, data.customerOperationPower, data.clientManagementPower, kpiValue(data, '客戶經營力'), cell(data, 'B20'), rowValue(data, 20))); // Dashboard_Data!B20
   const socialScore = safeNumber(pick(data.socialScore, data.socialManagementScore, data['社群經營度']));
   const contentScore = safeNumber(pick(data.contentScore, data.contentExecutionScore, data['內容執行力']));
   const digitalScore = safeNumber(pick(data.digitalScore, data.digitalMaturityScore, data['數位成熟度']));
   const digitalGrade = pick(data.digitalGrade, data.digitalMaturityGrade, data['數位成熟度評級'], gradeByHigherBetter(digitalScore, 70, 50, 30));
 
-  const sheetOverallScore = safeNumber(pick(data.newOverallScore, data.raw?.B50, data.overallScore, data.growthStageScore, data['新版綜合分數'], data['成長階段綜合分數']));
+  const sheetProfitAbilityScore = safeNumber(pick(data.profitAbilityScore, kpiValue(data, '獲利能力分數'), cell(data, 'B46'), rowValue(data, 46)));
+  const sheetCustomerMaturityScore = safeNumber(pick(data.customerMaturityScore, kpiValue(data, '客戶經營成熟度分數'), cell(data, 'B47'), rowValue(data, 47)));
+  const sheetTrafficContentScore = safeNumber(pick(data.trafficContentScore, kpiValue(data, '流量內容成熟度分數'), cell(data, 'B48'), rowValue(data, 48)));
+  const sheetAdConversionScore = safeNumber(pick(data.adConversionScore, kpiValue(data, '廣告轉換效率分數'), cell(data, 'B49'), rowValue(data, 49)));
+  const sheetNewGrowthStage = pick(data.newGrowthStage, kpiValue(data, '新版成長階段'), cell(data, 'B51'), rowValue(data, 51), data['新版成長階段']);
+
+  const sheetOverallScore = safeNumber(pick(data.newOverallScore, kpiValue(data, '新版綜合分數'), cell(data, 'B50'), rowValue(data, 50), data.overallScore, data.growthStageScore, data['新版綜合分數'], data['成長階段綜合分數'])); // Dashboard_Data!B50 first
 
   const problem1 = pick(data.problem1, data['問題1'], '回流率偏低');
   const problem2 = pick(data.problem2, data['問題2'], '客戶經營力不足');
@@ -458,9 +469,11 @@ export default function ResultDashboard({ result = {}, formData = {}, onRestart 
     return { profit, customer, traffic: trafficScore, conversion, brand, overall };
   }, [grossMargin, netMargin, paymentFeeRate, returningRate, referralRate, customerPower, socialScore, contentScore, digitalScore, roas, cpa]);
 
-  const overallScore = metricScores.overall || sheetOverallScore;
-  const growthStage = scoreToStage(overallScore);
+  const overallScore = sheetOverallScore || metricScores.overall;
+  const growthStage = sheetNewGrowthStage || scoreToStage(overallScore);
   const heroSummary = scoreToSummary(overallScore);
+  const execSummary = executiveSummary({ stage: growthStage, score: overallScore, problem1, strength1, firstPriority });
+  const diagnosisConfidence = confidenceScore({ totalRevenue, grossMargin, netMargin, returningRate, referralRate, socialScore, contentScore, digitalScore, roas, cpa });
   const overviewInsightList = overviewFindings({
     profitGrade,
     netGrade,
@@ -492,12 +505,20 @@ export default function ResultDashboard({ result = {}, formData = {}, onRestart 
   };
 
   const radarScores = useMemo(() => ({
-    profit: metricScores.profit,
-    customer: metricScores.customer,
-    traffic: metricScores.traffic,
-    conversion: metricScores.conversion,
-    brand: metricScores.brand,
-  }), [metricScores]);
+    profit: sheetProfitAbilityScore || metricScores.profit,
+    customer: sheetCustomerMaturityScore || metricScores.customer,
+    traffic: sheetTrafficContentScore || metricScores.traffic,
+    conversion: sheetAdConversionScore || metricScores.conversion,
+    brand: digitalScore || metricScores.brand,
+  }), [sheetProfitAbilityScore, sheetCustomerMaturityScore, sheetTrafficContentScore, sheetAdConversionScore, metricScores, digitalScore]);
+
+  const capabilityItems = useMemo(() => ([
+    capabilityMeta('profit', radarScores.profit),
+    capabilityMeta('customer', radarScores.customer),
+    capabilityMeta('traffic', radarScores.traffic),
+    capabilityMeta('conversion', radarScores.conversion),
+    capabilityMeta('brand', radarScores.brand),
+  ]), [radarScores]);
 
   return (
     <main className="pfm-v17-result-page">
@@ -551,7 +572,7 @@ export default function ResultDashboard({ result = {}, formData = {}, onRestart 
         </div>
 
         <div className="pfm-v18-overview-support-row">
-          <MetricCard icon="💳" label="客單價" value={fmtMoney(avgTicket)} grade={avgTicketGrade} desc="單次消費金額與服務價值。" tip="客單價反映服務價值與組合設計，可搭配加購與套票提升。" />
+          <MetricCard icon="🏢" label="租金率" value={fmtPercent(rentRate)} grade={rentGrade} desc="店面固定成本占營收比例。" tip="租金率反映空間成本與營收規模是否匹配，建議搭配坪效與預約率一起檢視。" />
           <MetricCard icon="🏦" label="金流手續費率" value={fmtPercent(paymentFeeRate)} grade={feeGrade} desc="非現金收款平台成本占營收比例。" tip="金流費用不一定會被第一時間感覺到，但會直接影響實際留下來的淨利。" />
         </div>
         <div className="pfm-v18-overview-findings">
@@ -573,10 +594,13 @@ export default function ResultDashboard({ result = {}, formData = {}, onRestart 
               <div className="pfm-v17-list-item pfm-v21-advice-item" key={`${item}-${index}`}>
                 <b>{index + 1}</b>
                 <div>
-                  <strong>{item}</strong>
+                  <span className="pfm-v22-advice-category is-problem">{['❶','❷','❸'][index] || `${index + 1}`} {advice.category || '經營風險'}</span>
+                  <strong>{advice.title || item}</strong>
                   <p>{advice.summary}</p>
-                  <div className="pfm-v21-advice-line"><em>⚠ 風險：</em><span>{advice.risk}</span></div>
-                  <div className="pfm-v21-advice-line"><em>✓ 建議第一步：</em><span>{advice.action}</span></div>
+                  <div className="pfm-v22-rating-row is-problem"><span>影響程度：</span><b>{advice.severity}</b><em>{ratingLabel(advice.severity)}</em></div>
+                  <div className="pfm-v22-analysis-row is-problem"><strong>⚠ 風險：</strong><span>{advice.risk}</span></div>
+                  <div className="pfm-v22-analysis-row is-action"><strong>✓ 第一步：</strong><span>{advice.action}</span></div>
+                  <div className="pfm-v22-consultant-note is-problem"><strong>PFM 顧問提醒</strong><p>{advice.quote}</p></div>
                 </div>
               </div>
             );
@@ -592,10 +616,13 @@ export default function ResultDashboard({ result = {}, formData = {}, onRestart 
               <div className="pfm-v17-list-item pfm-v21-advice-item" key={`${item}-${index}`}>
                 <b>{index + 1}</b>
                 <div>
-                  <strong>{item}</strong>
+                  <span className="pfm-v22-advice-category is-strength">{['❶','❷','❸'][index] || `${index + 1}`} {advice.category || '優勢放大'}</span>
+                  <strong>{advice.title || item}</strong>
                   <p>{advice.summary}</p>
-                  <div className="pfm-v21-advice-line"><em>↗ 放大方向：</em><span>{advice.leverage}</span></div>
-                  <div className="pfm-v21-advice-line"><em>✓ 建議第一步：</em><span>{advice.action}</span></div>
+                  <div className="pfm-v22-rating-row is-strength"><span>放大潛力：</span><b>{advice.potential}</b><em>{ratingLabel(advice.potential)}</em></div>
+                  <div className="pfm-v22-analysis-row is-strength"><strong>↗ 放大方向：</strong><span>{advice.leverage}</span></div>
+                  <div className="pfm-v22-analysis-row is-action"><strong>✓ 第一步：</strong><span>{advice.action}</span></div>
+                  <div className="pfm-v22-consultant-note is-strength"><strong>PFM 顧問提醒</strong><p>{advice.quote}</p></div>
                 </div>
               </div>
             );
@@ -707,18 +734,17 @@ export default function ResultDashboard({ result = {}, formData = {}, onRestart 
       </Section>
 
       <Section chapter="第五章" icon="⭐" title="成長潛力藍圖" subtitle="用五個面向快速看見目前店家的經營輪廓與下一步放大方向。">
-        <div className="pfm-v17-radar-layout">
+        <div className="pfm-v22-radar-dashboard">
           <div className="pfm-v17-radar-card"><RadarChart scores={radarScores} /></div>
-          <div className="pfm-v17-radar-explain">
-            <h3>五大構面來源</h3>
-            <dl>
-              <div><dt>獲利能力</dt><dd>對應第一章：毛利率、淨利率與成本控制。</dd></div>
-              <div><dt>客戶經營</dt><dd>對應第二章：回流率、介紹客與客戶經營力。</dd></div>
-              <div><dt>流量能力</dt><dd>對應第三章：社群經營、內容執行與自然曝光基礎。</dd></div>
-              <div><dt>轉換能力</dt><dd>對應第四章：CPA、ROAS 與成交承接效率。</dd></div>
-              <div><dt>品牌成熟</dt><dd>對應第三章：數位成熟度與系統化經營能力。</dd></div>
-            </dl>
-            <div className="pfm-v17-radar-grade"><span>綜合評級</span><strong>{scoreToGrade(overallScore)}</strong><p>目前最大優勢為「{strength1}」，可作為下一階段成長槓桿。</p></div>
+          <div className="pfm-v22-capability-panel">
+            <div className="pfm-v22-radar-summary">
+              <span>綜合評級</span>
+              <strong>{scoreToGrade(overallScore)}</strong>
+              <p>雷達圖用來快速看見目前五大能力的優勢與短板，能力卡提供每項能力的評估重點與改善方向，協助你掌握下一步優先改善順序。</p>
+            </div>
+            <div className="pfm-v22-capability-grid">
+              {capabilityItems.map((item) => <CapabilityCard key={item.key} item={item} />)}
+            </div>
           </div>
         </div>
       </Section>
@@ -747,13 +773,25 @@ export default function ResultDashboard({ result = {}, formData = {}, onRestart 
           <a href="https://line.me/" target="_blank" rel="noreferrer">Line｜預約 PFM 一對一診斷</a>
         </div>
       </Section>
+
+      <section className="pfm-v22-confidence-card" aria-label="PFM 商業診斷可信度">
+        <div>
+          <span>PFM 商業診斷可信度</span>
+          <strong>{confidenceGrade(diagnosisConfidence)}</strong>
+          <p>本次診斷依據店家提供的經營資料，結合財務結構、成本結構、客戶經營、流量內容與轉換效率等多項指標交叉分析，作為本報告的診斷依據。</p>
+        </div>
+        <div className="pfm-v22-confidence-meter"><i style={{ width: `${diagnosisConfidence}%` }} /></div>
+      </section>
         </>
       )}
 
       <section className="pfm-v21-pdf-report" aria-hidden="true">
         <article className="pfm-v21-pdf-page is-cover">
+          <div className="pfm-v22-pdf-cover-mark">PFM</div>
           <p className="pfm-v21-pdf-brand">PFM｜Profit Flow Management</p>
+          <p className="pfm-v22-pdf-cover-kicker">Premium Consulting Report</p>
           <h1>美業獲利健檢<br />專屬經營診斷報告</h1>
+          <div className="pfm-v22-pdf-cover-line" />
           <div className="pfm-v21-pdf-cover-box">
             <p><span>店家名稱</span><strong>{storeName}</strong></p>
             <p><span>店家類型</span><strong>{storeType}｜{category}</strong></p>
@@ -762,32 +800,58 @@ export default function ResultDashboard({ result = {}, formData = {}, onRestart 
           <footer>PFM Profit Flow Management</footer>
         </article>
 
-        <article className="pfm-v21-pdf-page">
-          <header><span>01</span><h2>經營總覽</h2></header>
+
+        <article className="pfm-v21-pdf-page is-exec">
+          <header><span>01</span><h2>Executive Summary</h2></header>
+          <section className="pfm-v22-exec-hero">
+            <small>PFM 顧問一句話</small>
+            <h3>{execSummary.headline}</h3>
+            <p>{execSummary.next}</p>
+          </section>
           <div className="pfm-v21-pdf-grid two">
-            <div><small>成長階段</small><strong>{growthStage}</strong></div>
+            <div><small>目前階段</small><strong>{growthStage}</strong></div>
             <div><small>綜合分數</small><strong>{fmtNumber(overallScore, 2)}</strong></div>
-            <div><small>最大風險</small><strong>{problem1}</strong></div>
+            <div><small>最大風險</small><strong>{problemAdvice(problem1, 0).title}</strong></div>
+            <div><small>最大優勢</small><strong>{strengthAdvice(strength1, 0).title}</strong></div>
+          </div>
+          <section className="pfm-v21-pdf-insight"><h3>接下來 90 天</h3><p><strong>應該聚焦：</strong>{execSummary.focus}</p><p><strong>暫時避免：</strong>{execSummary.avoid}</p></section>
+          <footer>PFM Profit Flow Management</footer>
+        </article>
+
+        <article className="pfm-v21-pdf-page is-overview">
+          <header><span>02</span><h2>經營診斷總覽</h2></header>
+          <section className="pfm-v22-pdf-diagnosis-card">
+            <small>目前狀態</small>
+            <h3>{consultantStatus}</h3>
+            <p>{heroSummary}</p>
+          </section>
+          <div className="pfm-v21-pdf-grid three">
+            <div><small>最大風險</small><strong>{problemAdvice(problem1, 0).title}</strong></div>
+            <div><small>最大機會</small><strong>{strengthAdvice(strength1, 0).title}</strong></div>
             <div><small>90天優先</small><strong>{firstPriority}</strong></div>
           </div>
-          <section className="pfm-v21-pdf-insight"><h3>PFM 顧問摘要</h3><p>{heroSummary}</p><p>目前最大優勢為「{strength1}」，最大需要修復的項目為「{problem1}」。建議先把 90 天焦點收斂在「{firstPriority}」。</p></section>
+          <section className="pfm-v21-pdf-insight"><h3>顧問判斷</h3><p>{consultantDirection}</p><p>建議先把改善焦點收斂在一個會直接影響獲利或回流的動作，避免同時追太多方向。</p></section>
           <footer>PFM Profit Flow Management</footer>
         </article>
 
         <article className="pfm-v21-pdf-page">
-          <header><span>02</span><h2>獲利健康總覽</h2></header>
+          <header><span>03</span><h2>獲利健康總覽</h2></header>
           <div className="pfm-v21-pdf-grid four">
             <div><small>毛利率</small><strong>{fmtPercent(grossMargin)}</strong></div>
             <div><small>淨利率</small><strong>{fmtPercent(netMargin)}</strong></div>
             <div><small>回流率</small><strong>{fmtPercent(returningRate)}</strong></div>
-            <div><small>客單價</small><strong>{fmtMoney(avgTicket)}</strong></div>
+            <div><small>金流手續費率</small><strong>{fmtPercent(paymentFeeRate)}</strong></div>
+          </div>
+          <div className="pfm-v22-pdf-bars">
+            <div><span>獲利能力分數</span><i><em style={{ width: `${Math.max(8, Math.min(100, radarScores.profit))}%` }} /></i><strong>{fmtNumber(radarScores.profit, 0)}</strong></div>
+            <div><span>淨利健康度</span><i><em style={{ width: `${Math.max(8, Math.min(100, scoreByHigher(netMargin, -5, 5, 15, 25)))}%` }} /></i><strong>{fmtNumber(scoreByHigher(netMargin, -5, 5, 15, 25), 0)}</strong></div>
           </div>
           <section className="pfm-v21-pdf-insight"><h3>PFM 顧問解讀</h3><ul>{overviewInsightList.map((item) => <li key={item}>{item}</li>)}</ul></section>
           <footer>PFM Profit Flow Management</footer>
         </article>
 
         <article className="pfm-v21-pdf-page">
-          <header><span>03</span><h2>客戶經營分析</h2></header>
+          <header><span>04</span><h2>客戶經營分析</h2></header>
           <div className="pfm-v21-pdf-grid four">
             <div><small>新客率</small><strong>{fmtPercent(newCustomerRate)}</strong></div>
             <div><small>回流率</small><strong>{fmtPercent(returningRate)}</strong></div>
@@ -799,7 +863,7 @@ export default function ResultDashboard({ result = {}, formData = {}, onRestart 
         </article>
 
         <article className="pfm-v21-pdf-page">
-          <header><span>04</span><h2>流量內容能力</h2></header>
+          <header><span>05</span><h2>流量內容能力</h2></header>
           <div className="pfm-v21-pdf-grid four">
             <div><small>社群經營度</small><strong>{fmtNumber(socialScore, 2)}</strong></div>
             <div><small>內容執行力</small><strong>{fmtNumber(contentScore, 2)}</strong></div>
@@ -811,48 +875,50 @@ export default function ResultDashboard({ result = {}, formData = {}, onRestart 
         </article>
 
         <article className="pfm-v21-pdf-page">
-          <header><span>05</span><h2>轉換漏斗與廣告效率</h2></header>
+          <header><span>06</span><h2>轉換漏斗與廣告效率</h2></header>
           <div className="pfm-v21-pdf-grid three">
             <div><small>CPA</small><strong>{fmtNumber(cpa, 0)}</strong></div>
             <div><small>ROAS</small><strong>{fmtNumber(roas, 2)}</strong></div>
             <div><small>金流手續費率</small><strong>{fmtPercent(paymentFeeRate)}</strong></div>
           </div>
+          <div className="pfm-v22-pdf-funnel"><span>曝光</span><b>→</b><span>詢問</span><b>→</b><span>預約</span><b>→</b><span>成交</span><b>→</b><span>回流</span></div>
           <section className="pfm-v21-pdf-insight"><h3>PFM 顧問解讀</h3><p>廣告效率不是只看有沒有投放，而是看流量進來後能否被預約、成交與回流承接。</p><p>若 ROAS 表現好但淨利偏低，仍要同步檢查成本結構與金流費用。</p></section>
           <footer>PFM Profit Flow Management</footer>
         </article>
 
         <article className="pfm-v21-pdf-page">
-          <header><span>06</span><h2>三大問題診斷</h2></header>
+          <header><span>07</span><h2>三大問題診斷</h2></header>
           <div className="pfm-v21-pdf-list">
-            {[problem1, problem2, problem3].map((item, index) => { const advice = problemAdvice(item, index); return <section key={`${item}-pdf-${index}`}><b>{index + 1}</b><div><h3>{item}</h3><p>{advice.summary}</p><p><strong>風險：</strong>{advice.risk}</p><p><strong>建議第一步：</strong>{advice.action}</p></div></section>; })}
+            {[problem1, problem2, problem3].map((item, index) => { const advice = problemAdvice(item, index); return <section key={`${item}-pdf-${index}`}><b>{index + 1}</b><div><small className="pfm-v22-pdf-category is-problem">{advice.category || '經營風險'}</small><h3>{advice.title || item}</h3><p>{advice.summary}</p><p className="pfm-v22-pdf-meta is-problem"><strong>影響程度：</strong>{advice.severity}　{ratingLabel(advice.severity)}</p><p><strong>風險：</strong>{advice.risk}</p><p><strong>第一步：</strong>{advice.action}</p><p className="pfm-v22-pdf-quote is-problem"><strong>PFM 顧問提醒：</strong>{advice.quote}</p></div></section>; })}
           </div>
           <footer>PFM Profit Flow Management</footer>
         </article>
 
         <article className="pfm-v21-pdf-page">
-          <header><span>07</span><h2>三大優勢放大</h2></header>
+          <header><span>08</span><h2>三大優勢放大</h2></header>
           <div className="pfm-v21-pdf-list">
-            {[strength1, strength2, strength3].map((item, index) => { const advice = strengthAdvice(item, index); return <section key={`${item}-pdf-${index}`}><b>{index + 1}</b><div><h3>{item}</h3><p>{advice.summary}</p><p><strong>放大方向：</strong>{advice.leverage}</p><p><strong>建議第一步：</strong>{advice.action}</p></div></section>; })}
+            {[strength1, strength2, strength3].map((item, index) => { const advice = strengthAdvice(item, index); return <section key={`${item}-pdf-${index}`}><b>{index + 1}</b><div><small className="pfm-v22-pdf-category is-strength">{advice.category || '優勢放大'}</small><h3>{advice.title || item}</h3><p>{advice.summary}</p><p className="pfm-v22-pdf-meta is-strength"><strong>放大潛力：</strong>{advice.potential}　{ratingLabel(advice.potential)}</p><p><strong>放大方向：</strong>{advice.leverage}</p><p><strong>第一步：</strong>{advice.action}</p><p className="pfm-v22-pdf-quote is-strength"><strong>PFM 顧問提醒：</strong>{advice.quote}</p></div></section>; })}
           </div>
           <footer>PFM Profit Flow Management</footer>
         </article>
 
         <article className="pfm-v21-pdf-page">
-          <header><span>08</span><h2>成長潛力藍圖</h2></header>
-          <div className="pfm-v21-pdf-grid two">
-            <div><small>獲利能力</small><strong>{fmtNumber(radarScores.profit, 0)}</strong></div>
-            <div><small>客戶經營</small><strong>{fmtNumber(radarScores.customer, 0)}</strong></div>
-            <div><small>流量能力</small><strong>{fmtNumber(radarScores.traffic, 0)}</strong></div>
-            <div><small>轉換能力</small><strong>{fmtNumber(radarScores.conversion, 0)}</strong></div>
+          <header><span>09</span><h2>成長潛力藍圖</h2></header>
+          <div className="pfm-v22-pdf-radar-layout">
+            <div className="pfm-v22-pdf-radar"><RadarChart scores={radarScores} /></div>
+            <div className="pfm-v22-pdf-capability-list">
+              {capabilityItems.map((item) => <CapabilityCard key={`pdf-${item.key}`} item={item} compact />)}
+            </div>
           </div>
-          <section className="pfm-v21-pdf-insight"><h3>PFM 顧問解讀</h3><p>雷達圖用來快速看見短板。後續 V22 會同步重建 Google Sheet 評分引擎，讓分數、雷達圖與成長階段完全一致。</p></section>
+          <section className="pfm-v21-pdf-insight"><h3>PFM 顧問解讀</h3><p>雷達圖用來快速看見目前五大能力的優勢與短板，能力卡提供每項能力的評估重點與改善方向，協助你掌握下一步優先改善順序。</p></section>
           <footer>PFM Profit Flow Management</footer>
         </article>
 
         <article className="pfm-v21-pdf-page">
-          <header><span>09</span><h2>90天改善路徑</h2></header>
+          <header><span>10</span><h2>90天改善路徑</h2></header>
           <div className="pfm-v21-pdf-roadmap"><section><b>1</b><h3>{firstPriority}</h3><p>先處理最能影響獲利與回流的第一優先事項。</p></section><section><b>2</b><h3>優化金流與廣告成本</h3><p>降低隱形成本，提升每一筆成交留下來的淨利。</p></section><section><b>3</b><h3>建立會員經營系統</h3><p>用標籤、回訪與再購流程提升顧客終身價值。</p></section></div>
           <section className="pfm-v21-pdf-final"><h3>顧問結論</h3><p>{consultantDirection}</p></section>
+          <section className="pfm-v22-pdf-confidence"><div><small>PFM 商業診斷可信度</small><strong>{confidenceGrade(diagnosisConfidence)}｜{diagnosisConfidence}%</strong></div><p>此指標代表本次診斷結果的參考可信度，不代表店家的經營分數。</p></section>
           <footer>PFM Profit Flow Management</footer>
         </article>
       </section>

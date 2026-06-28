@@ -2507,3 +2507,999 @@ body.pfm-v21-print-mode .pfm-v21-pdf-report {
     line-height: 1.65 !important;
   }
 }
+
+/* =========================================================
+   PFM V22 Knowledge Engine + PDF Rhythm Upgrade
+   - richer consultant knowledge blocks
+   - no repeated generic placeholder wording
+   - PDF executive summary, bars, funnel, radar, timeline rhythm
+========================================================= */
+.pfm-v22-score-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #fff6df;
+  border: 1px solid rgba(214,167,70,.38);
+  color: #8b5d09;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.pfm-v22-score-tag b {
+  color: #9b0c23;
+  letter-spacing: .08em;
+}
+
+.pfm-v22-consultant-quote {
+  margin-top: 9px;
+  padding: 9px 11px;
+  border-left: 3px solid #9b0c23;
+  border-radius: 9px;
+  background: rgba(125,16,33,.055);
+  color: #6f1020;
+  font-size: 12.8px;
+  line-height: 1.55;
+  font-weight: 800;
+}
+
+.pfm-v21-advice-line {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  align-items: start;
+}
+
+.pfm-v21-advice-line em {
+  white-space: nowrap;
+}
+
+@media print {
+  .pfm-v21-pdf-page.is-exec {
+    background:
+      radial-gradient(circle at 82% 72%, rgba(125,16,33,.055), transparent 32mm),
+      #fffdf8 !important;
+  }
+
+  .pfm-v22-exec-hero {
+    margin-bottom: 10mm;
+    padding: 12mm;
+    border-radius: 8mm;
+    background: linear-gradient(135deg, #6b0615, #9b1025);
+    color: #fff;
+  }
+
+  .pfm-v22-exec-hero small {
+    display: block;
+    margin-bottom: 4mm;
+    color: #f3d066;
+    font-size: 10pt;
+    font-weight: 900;
+    letter-spacing: .08em;
+  }
+
+  .pfm-v22-exec-hero h3 {
+    color: #fff !important;
+    font-size: 18pt !important;
+    line-height: 1.45;
+    margin-bottom: 5mm !important;
+  }
+
+  .pfm-v22-exec-hero p {
+    color: rgba(255,255,255,.9) !important;
+    margin: 0 !important;
+  }
+
+  .pfm-v22-pdf-bars {
+    display: grid;
+    gap: 4mm;
+    margin: -4mm 0 8mm;
+  }
+
+  .pfm-v22-pdf-bars div {
+    display: grid;
+    grid-template-columns: 32mm 1fr 14mm;
+    gap: 5mm;
+    align-items: center;
+    padding: 4mm 5mm;
+    border: 1px solid rgba(214,167,70,.32);
+    border-radius: 5mm;
+    background: #fffaf4;
+  }
+
+  .pfm-v22-pdf-bars span {
+    color: #7d1021;
+    font-size: 9.5pt;
+    font-weight: 900;
+  }
+
+  .pfm-v22-pdf-bars i {
+    display: block;
+    height: 4mm;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #f3ead8;
+  }
+
+  .pfm-v22-pdf-bars em {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #d6a746, #7d1021);
+  }
+
+  .pfm-v22-pdf-bars strong {
+    color: #153f38;
+    font-size: 11pt;
+  }
+
+  .pfm-v22-pdf-funnel {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr auto) 1fr;
+    align-items: center;
+    gap: 2mm;
+    margin: 0 0 9mm;
+    padding: 5mm;
+    border: 1px solid rgba(214,167,70,.32);
+    border-radius: 6mm;
+    background: #fffaf4;
+  }
+
+  .pfm-v22-pdf-funnel span {
+    display: grid;
+    place-items: center;
+    min-height: 10mm;
+    border-radius: 999px;
+    background: #fff1d2;
+    color: #7d1021;
+    font-size: 9pt;
+    font-weight: 900;
+  }
+
+  .pfm-v22-pdf-funnel b {
+    color: #c99832;
+    font-size: 12pt;
+  }
+
+  .pfm-v22-pdf-quote {
+    margin-top: 3mm !important;
+    padding: 3mm 4mm;
+    border-left: 3px solid #7d1021;
+    border-radius: 3mm;
+    background: rgba(125,16,33,.055);
+    color: #7d1021 !important;
+    font-weight: 900;
+  }
+
+  .pfm-v22-pdf-radar {
+    display: grid;
+    place-items: center;
+    height: 88mm;
+    margin: -4mm 0 8mm;
+    border: 1px solid rgba(214,167,70,.32);
+    border-radius: 6mm;
+    background: #fffaf4;
+  }
+
+  .pfm-v22-pdf-radar .pfm-v17-radar {
+    width: 92mm;
+    max-height: 82mm;
+  }
+
+  .pfm-v21-pdf-roadmap section {
+    position: relative;
+    min-height: 26mm;
+  }
+
+  .pfm-v21-pdf-roadmap section::after {
+    content: '';
+    position: absolute;
+    left: 12mm;
+    top: 20mm;
+    bottom: -8mm;
+    width: 1px;
+    background: rgba(125,16,33,.18);
+  }
+
+  .pfm-v21-pdf-roadmap section:last-child::after {
+    display: none;
+  }
+}
+
+/* =========================================================
+   PFM V22A.1 Quality Patch
+   - fix star pill width / label readability
+   - make consultant quote self-explanatory
+   - compact PDF problem/strength pages
+   - differentiate PDF overview/profit pages
+========================================================= */
+.pfm-v22-score-tag {
+  min-width: 166px !important;
+  width: max-content !important;
+  max-width: 100% !important;
+  justify-content: space-between !important;
+  padding: 7px 14px !important;
+  gap: 12px !important;
+  white-space: nowrap !important;
+}
+
+.pfm-v22-score-tag b {
+  letter-spacing: .02em !important;
+  white-space: nowrap !important;
+  font-size: 13px !important;
+}
+
+.pfm-v21-advice-line {
+  grid-template-columns: max-content minmax(0, 1fr) !important;
+  gap: 6px 10px !important;
+  padding: 10px 12px !important;
+}
+
+.pfm-v21-advice-line em {
+  display: inline-block !important;
+  min-width: 74px !important;
+  white-space: nowrap !important;
+}
+
+.pfm-v22-consultant-quote {
+  display: block !important;
+  padding: 10px 12px !important;
+  border-left-width: 4px !important;
+  background: linear-gradient(90deg, rgba(125,16,33,.08), rgba(125,16,33,.035)) !important;
+}
+
+.pfm-v22-consultant-quote strong {
+  color: #8a0a1d !important;
+  font-weight: 950 !important;
+  margin-right: 4px !important;
+}
+
+.pfm-v17-radar-explain dt {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+}
+
+.pfm-v17-radar-explain dt strong {
+  flex: 0 0 auto !important;
+  color: #8a0a1d !important;
+  font-size: 14px !important;
+  font-weight: 950 !important;
+}
+
+@media print {
+  .pfm-v22-pdf-diagnosis-card {
+    margin-bottom: 8mm;
+    padding: 8mm 9mm;
+    border: 1px solid rgba(214,167,70,.32);
+    border-radius: 6mm;
+    background: linear-gradient(135deg, #fffaf4, #fffdf8);
+  }
+
+  .pfm-v22-pdf-diagnosis-card small {
+    display: block;
+    margin-bottom: 3mm;
+    color: #b07a13;
+    font-size: 10pt;
+    font-weight: 900;
+    letter-spacing: .05em;
+  }
+
+  .pfm-v22-pdf-diagnosis-card h3 {
+    margin: 0 0 4mm !important;
+    color: #153f38 !important;
+    font-size: 14pt !important;
+    line-height: 1.45 !important;
+  }
+
+  .pfm-v22-pdf-diagnosis-card p {
+    margin: 0 !important;
+  }
+
+  .pfm-v21-pdf-list {
+    gap: 4.2mm !important;
+  }
+
+  .pfm-v21-pdf-list section {
+    grid-template-columns: 10mm minmax(0, 1fr) !important;
+    gap: 4mm !important;
+    padding: 5mm 6mm !important;
+    min-height: 0 !important;
+  }
+
+  .pfm-v21-pdf-list b {
+    width: 8mm !important;
+    height: 8mm !important;
+    font-size: 9pt !important;
+  }
+
+  .pfm-v21-pdf-list h3 {
+    margin: 0 0 2mm !important;
+    font-size: 11pt !important;
+    line-height: 1.25 !important;
+  }
+
+  .pfm-v21-pdf-list p {
+    margin: 0 0 1.7mm !important;
+    font-size: 8.6pt !important;
+    line-height: 1.45 !important;
+  }
+
+  .pfm-v22-pdf-meta {
+    display: inline-block !important;
+    padding: 1mm 2.5mm !important;
+    border-radius: 999px !important;
+    background: #fff6df !important;
+    border: 1px solid rgba(214,167,70,.32) !important;
+    color: #7d1021 !important;
+    font-weight: 900 !important;
+  }
+
+  .pfm-v21-pdf-page:nth-of-type(8),
+  .pfm-v21-pdf-page:nth-of-type(9) {
+    padding-top: 18mm !important;
+  }
+
+  .pfm-v22-pdf-radar {
+    height: 80mm !important;
+    margin-bottom: 6mm !important;
+  }
+
+  .pfm-v21-pdf-page .pfm-v21-pdf-grid.two:has(div:nth-child(5)) {
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 3mm !important;
+  }
+
+  .pfm-v21-pdf-page .pfm-v21-pdf-grid.two:has(div:nth-child(5)) div {
+    padding: 4mm !important;
+  }
+
+  .pfm-v21-pdf-page .pfm-v21-pdf-grid.two:has(div:nth-child(5)) strong {
+    font-size: 14pt !important;
+  }
+}
+
+/* =========================================================
+   PFM V22B Radar Score Patch
+   - show scores directly on radar labels in web and PDF
+========================================================= */
+.pfm-v17-radar-label {
+  font-size: 15px !important;
+  line-height: 1.2 !important;
+}
+
+.pfm-v17-radar-score {
+  fill: #7d1021 !important;
+  font-size: 15px !important;
+  font-weight: 950 !important;
+}
+
+@media print {
+  .pfm-v22-pdf-radar .pfm-v17-radar-label {
+    font-size: 9.4px !important;
+  }
+
+  .pfm-v22-pdf-radar .pfm-v17-radar-score {
+    font-size: 9.8px !important;
+    fill: #7d1021 !important;
+  }
+}
+
+/* =========================================================
+   PFM V22B.1 Rating + Confidence Refinement
+   - web rating matches PDF one-line style
+   - problem/strength analysis blocks use clearer colored panels
+   - add PFM business diagnosis confidence card
+========================================================= */
+.pfm-v22-score-tag { display: none !important; }
+
+.pfm-v22-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 9px 0 10px;
+  color: #7a4c04;
+  font-size: 13.5px;
+  font-weight: 900;
+  line-height: 1.35;
+}
+.pfm-v22-rating-row b {
+  color: #9b0c23;
+  letter-spacing: .06em;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.pfm-v22-rating-row em {
+  font-style: normal;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 246, 222, .9);
+  border: 1px solid rgba(214, 167, 70, .28);
+  color: #8a0a1d;
+  font-size: 12px;
+}
+.pfm-v22-rating-row.is-strength b { color: #0d7651; }
+.pfm-v22-rating-row.is-strength em { color: #0d7651; background: rgba(232, 249, 238, .92); }
+
+.pfm-v22-analysis-row {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 6px 10px;
+  align-items: start;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13.2px;
+  line-height: 1.55;
+}
+.pfm-v22-analysis-row strong {
+  white-space: nowrap;
+  font-weight: 950;
+}
+.pfm-v22-analysis-row span { color: #4f625e; }
+.pfm-v22-analysis-row.is-problem {
+  border: 1px solid rgba(155, 12, 35, .16);
+  background: linear-gradient(135deg, rgba(155, 12, 35, .07), rgba(155, 12, 35, .035));
+}
+.pfm-v22-analysis-row.is-problem strong { color: #8b1022; }
+.pfm-v22-analysis-row.is-strength {
+  border: 1px solid rgba(18, 135, 83, .16);
+  background: linear-gradient(135deg, rgba(18, 135, 83, .08), rgba(18, 135, 83, .035));
+}
+.pfm-v22-analysis-row.is-strength strong { color: #0d7651; }
+.pfm-v22-analysis-row.is-action {
+  border: 1px solid rgba(214, 167, 70, .28);
+  background: linear-gradient(135deg, rgba(255, 248, 232, .95), rgba(255, 243, 210, .62));
+}
+.pfm-v22-analysis-row.is-action strong { color: #9b6b0d; }
+
+.pfm-v22-consultant-note {
+  margin-top: 9px;
+  padding: 11px 13px;
+  border-radius: 12px;
+}
+.pfm-v22-consultant-note strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12.5px;
+  letter-spacing: .03em;
+  font-weight: 950;
+}
+.pfm-v22-consultant-note p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  font-weight: 800;
+}
+.pfm-v22-consultant-note.is-problem {
+  border-left: 4px solid #9b0c23;
+  background: linear-gradient(90deg, rgba(155, 12, 35, .09), rgba(155, 12, 35, .035));
+  color: #7d1021;
+}
+.pfm-v22-consultant-note.is-strength {
+  border-left: 4px solid #0d7651;
+  background: linear-gradient(90deg, rgba(18, 135, 83, .09), rgba(18, 135, 83, .035));
+  color: #0d6044;
+}
+
+.pfm-v17-list-item.pfm-v21-advice-item {
+  align-items: start !important;
+  padding: 18px 20px !important;
+}
+.pfm-v17-list-item.pfm-v21-advice-item > div > p {
+  margin: 0 0 4px !important;
+  color: #516864 !important;
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+}
+
+.pfm-v22-confidence-card {
+  width: min(1180px, calc(100% - 72px));
+  margin: 22px auto 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, .42fr);
+  gap: 24px;
+  align-items: center;
+  padding: 22px 28px;
+  border: 1px solid rgba(214, 167, 70, .34);
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(255,253,248,.94), rgba(255,247,232,.82));
+  box-shadow: 0 12px 32px rgba(72, 35, 12, 0.07);
+}
+.pfm-v22-confidence-card span {
+  display: block;
+  color: #b07a13;
+  font-size: 13px;
+  font-weight: 950;
+  letter-spacing: .08em;
+  margin-bottom: 6px;
+}
+.pfm-v22-confidence-card strong {
+  display: block;
+  color: var(--pfm-wine);
+  font-size: 32px;
+  line-height: 1;
+  font-weight: 950;
+  margin-bottom: 6px;
+}
+.pfm-v22-confidence-card p {
+  margin: 0;
+  color: #5f716d;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.pfm-v22-confidence-meter {
+  position: relative;
+  height: 18px;
+  border-radius: 999px;
+  background: #f1e6d4;
+  overflow: hidden;
+}
+.pfm-v22-confidence-meter i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #d6a746, #7d1021);
+}
+.pfm-v22-confidence-meter b {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+@media (max-width: 1180px) {
+  .pfm-v22-confidence-card { width: min(100% - 40px, 920px); grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .pfm-v22-confidence-card { width: calc(100% - 24px); padding: 20px; }
+  .pfm-v22-analysis-row { grid-template-columns: 1fr; gap: 3px; }
+  .pfm-v22-rating-row { flex-wrap: wrap; }
+}
+
+@media print {
+  .pfm-v22-pdf-confidence {
+    margin: 0 0 8mm;
+    padding: 5mm 6mm;
+    border: 1px solid rgba(214,167,70,.32);
+    border-radius: 5mm;
+    background: #fffaf4;
+  }
+  .pfm-v22-pdf-confidence div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8mm;
+    margin-bottom: 2mm;
+  }
+  .pfm-v22-pdf-confidence small {
+    color: #b07a13;
+    font-size: 9pt;
+    font-weight: 950;
+  }
+  .pfm-v22-pdf-confidence strong {
+    color: #7d1021;
+    font-size: 13pt;
+    font-weight: 950;
+  }
+  .pfm-v22-pdf-confidence p {
+    margin: 0 !important;
+    color: #5f716d !important;
+    font-size: 8.7pt !important;
+    line-height: 1.45 !important;
+  }
+  .pfm-v22-pdf-meta {
+    display: block !important;
+    width: fit-content !important;
+    padding: 1.3mm 2.6mm !important;
+    border-radius: 999px !important;
+    margin-bottom: 1.8mm !important;
+  }
+  .pfm-v22-pdf-meta.is-problem {
+    background: rgba(155, 12, 35, .08) !important;
+    border-color: rgba(155, 12, 35, .18) !important;
+    color: #7d1021 !important;
+  }
+  .pfm-v22-pdf-meta.is-strength {
+    background: rgba(18, 135, 83, .08) !important;
+    border-color: rgba(18, 135, 83, .18) !important;
+    color: #0d7651 !important;
+  }
+}
+
+/* =========================================================
+   PFM V22B RC1 Professional Report Polish
+   - category labels for problem/strength cards
+   - radar capability dashboard without formula weights
+   - confidence card moved to final section
+========================================================= */
+.pfm-v22-advice-category {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin: 0 0 7px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 950;
+  letter-spacing: .03em;
+}
+.pfm-v22-advice-category.is-problem {
+  color: #8b1022;
+  background: rgba(155, 12, 35, .08);
+  border: 1px solid rgba(155, 12, 35, .18);
+}
+.pfm-v22-advice-category.is-strength {
+  color: #0d7651;
+  background: rgba(18, 135, 83, .08);
+  border: 1px solid rgba(18, 135, 83, .18);
+}
+
+.pfm-v22-rating-row b {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  display: inline !important;
+  font-size: 16px !important;
+}
+
+.pfm-v22-radar-dashboard {
+  display: grid;
+  grid-template-columns: minmax(360px, .86fr) minmax(0, 1.14fr);
+  gap: 24px;
+  align-items: stretch;
+}
+.pfm-v22-radar-dashboard .pfm-v17-radar-card {
+  min-height: 520px;
+}
+.pfm-v22-capability-panel {
+  display: grid;
+  gap: 14px;
+}
+.pfm-v22-radar-summary {
+  padding: 18px 20px;
+  border-radius: 18px;
+  border: 1px solid rgba(214, 167, 70, .34);
+  background: linear-gradient(135deg, #fffaf4, #fff3df);
+}
+.pfm-v22-radar-summary span {
+  display: block;
+  color: #b07a13;
+  font-size: 13px;
+  font-weight: 950;
+  letter-spacing: .08em;
+  margin-bottom: 6px;
+}
+.pfm-v22-radar-summary strong {
+  display: block;
+  color: var(--pfm-wine);
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 950;
+  margin-bottom: 8px;
+}
+.pfm-v22-radar-summary p {
+  margin: 0;
+  color: #5f716d;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.pfm-v22-capability-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.pfm-v22-capability-card {
+  padding: 15px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(214, 167, 70, .3);
+  background: rgba(255, 253, 248, .88);
+  box-shadow: 0 10px 22px rgba(72, 35, 12, .06);
+}
+.pfm-v22-capability-card.is-weak { border-color: rgba(155, 12, 35, .22); background: linear-gradient(135deg, rgba(255,253,248,.95), rgba(255,239,241,.76)); }
+.pfm-v22-capability-card.is-caution { border-color: rgba(214, 167, 70, .34); background: linear-gradient(135deg, rgba(255,253,248,.95), rgba(255,246,222,.78)); }
+.pfm-v22-capability-card.is-good,
+.pfm-v22-capability-card.is-excellent { border-color: rgba(18, 135, 83, .22); background: linear-gradient(135deg, rgba(255,253,248,.95), rgba(234,249,239,.76)); }
+.pfm-v22-capability-head {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.pfm-v22-capability-head > span {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  background: #fff7e8;
+  border: 1px solid rgba(214, 167, 70, .28);
+}
+.pfm-v22-capability-head h4 {
+  margin: 0 0 3px;
+  color: var(--pfm-ink);
+  font-size: 15px;
+  font-weight: 950;
+}
+.pfm-v22-capability-head b {
+  display: inline-flex;
+  width: fit-content;
+  padding: 2px 8px;
+  border-radius: 999px;
+  color: #8b1022;
+  background: rgba(155, 12, 35, .08);
+  font-size: 11px;
+  line-height: 1.3;
+}
+.pfm-v22-capability-card.is-caution .pfm-v22-capability-head b { color: #9b6b0d; background: rgba(214,167,70,.14); }
+.pfm-v22-capability-card.is-good .pfm-v22-capability-head b,
+.pfm-v22-capability-card.is-excellent .pfm-v22-capability-head b { color: #0d7651; background: rgba(18,135,83,.1); }
+.pfm-v22-capability-head strong {
+  color: var(--pfm-wine);
+  font-size: 26px;
+  line-height: 1;
+  font-weight: 950;
+}
+.pfm-v22-capability-head strong small {
+  color: #8b9b97;
+  font-size: 11px;
+  margin-left: 2px;
+}
+.pfm-v22-capability-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: #efe4d4;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.pfm-v22-capability-bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #9b0c23, #d6a746);
+}
+.pfm-v22-capability-card.is-good .pfm-v22-capability-bar i,
+.pfm-v22-capability-card.is-excellent .pfm-v22-capability-bar i { background: linear-gradient(90deg, #d6a746, #0d7651); }
+.pfm-v22-capability-focus,
+.pfm-v22-capability-advice {
+  margin: 0;
+  color: #566b67;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+.pfm-v22-capability-focus { margin-bottom: 6px; }
+.pfm-v22-capability-focus em {
+  color: #9b6b0d;
+  font-style: normal;
+  font-weight: 950;
+}
+.pfm-v22-capability-advice {
+  color: #31564f;
+  font-weight: 750;
+}
+
+/* Final confidence card should align with hero width and feel like a closing verification block. */
+.pfm-v22-confidence-card {
+  width: min(1180px, calc(100% - 72px)) !important;
+  margin-top: 24px !important;
+}
+.pfm-v22-confidence-card strong {
+  font-size: 26px !important;
+}
+
+@media (max-width: 1180px) {
+  .pfm-v22-radar-dashboard { grid-template-columns: 1fr; }
+  .pfm-v22-capability-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .pfm-v22-radar-dashboard .pfm-v17-radar-card { min-height: 330px; }
+  .pfm-v22-capability-head { grid-template-columns: 32px 1fr auto; }
+  .pfm-v22-capability-head strong { font-size: 22px; }
+}
+
+@media print {
+  .pfm-v22-pdf-radar-layout {
+    display: grid !important;
+    grid-template-columns: 86mm 1fr !important;
+    gap: 7mm !important;
+    align-items: start !important;
+  }
+  .pfm-v22-pdf-capability-list {
+    display: grid !important;
+    gap: 2.4mm !important;
+  }
+  .pfm-v22-pdf-capability-list .pfm-v22-capability-card {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    padding: 3mm 3.5mm !important;
+    border-radius: 3mm !important;
+    box-shadow: none !important;
+  }
+  .pfm-v22-pdf-capability-list .pfm-v22-capability-head {
+    grid-template-columns: 8mm 1fr auto !important;
+    gap: 2.4mm !important;
+    margin-bottom: 2mm !important;
+  }
+  .pfm-v22-pdf-capability-list .pfm-v22-capability-head > span {
+    width: 8mm !important;
+    height: 8mm !important;
+    font-size: 8pt !important;
+  }
+  .pfm-v22-pdf-capability-list .pfm-v22-capability-head h4 { font-size: 8.6pt !important; }
+  .pfm-v22-pdf-capability-list .pfm-v22-capability-head b { font-size: 6.8pt !important; padding: .6mm 1.5mm !important; }
+  .pfm-v22-pdf-capability-list .pfm-v22-capability-head strong { font-size: 13pt !important; }
+  .pfm-v22-pdf-capability-list .pfm-v22-capability-bar { height: 1.5mm !important; margin-bottom: 1.8mm !important; }
+  .pfm-v22-pdf-capability-list .pfm-v22-capability-focus,
+  .pfm-v22-pdf-capability-list .pfm-v22-capability-advice { font-size: 7.4pt !important; line-height: 1.35 !important; }
+  .pfm-v22-pdf-category {
+    display: inline-block !important;
+    width: fit-content !important;
+    margin: 0 0 1.2mm !important;
+    padding: .8mm 2mm !important;
+    border-radius: 999px !important;
+    font-size: 7pt !important;
+    font-weight: 950 !important;
+  }
+  .pfm-v22-pdf-category.is-problem { color: #8b1022 !important; background: rgba(155,12,35,.08) !important; }
+  .pfm-v22-pdf-category.is-strength { color: #0d7651 !important; background: rgba(18,135,83,.08) !important; }
+  .pfm-v22-pdf-quote {
+    margin-top: 1.5mm !important;
+    padding: 1.8mm 2.2mm !important;
+    border-radius: 2.5mm !important;
+    font-size: 8pt !important;
+    line-height: 1.38 !important;
+  }
+  .pfm-v22-pdf-quote.is-problem { color: #7d1021 !important; background: rgba(155,12,35,.06) !important; }
+  .pfm-v22-pdf-quote.is-strength { color: #0d6044 !important; background: rgba(18,135,83,.06) !important; }
+}
+
+/* =========================================================
+   PFM V22B Final Polish
+   - Final wording, confidence card alignment, PDF spacing and premium cover
+========================================================= */
+.pfm-v22-confidence-card {
+  width: var(--pfm-result-container) !important;
+  max-width: 1120px !important;
+  margin: 28px auto 0 !important;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, .36fr) !important;
+}
+.pfm-v22-confidence-meter b { display: none !important; }
+.pfm-v18-unlocked-note {
+  display: flex !important;
+  width: fit-content !important;
+  max-width: min(100%, 520px) !important;
+  margin: 12px auto 0 !important;
+  padding: 0 26px !important;
+}
+.pfm-v18-restart-link {
+  display: flex !important;
+  width: fit-content !important;
+  margin: 18px auto 0 !important;
+}
+
+@media (max-width: 1180px) {
+  .pfm-v22-confidence-card { width: var(--pfm-result-container) !important; grid-template-columns: 1fr !important; }
+}
+@media (max-width: 640px) {
+  .pfm-v22-confidence-card { width: var(--pfm-result-container) !important; }
+  .pfm-v18-unlocked-note { width: 100% !important; }
+}
+
+@media print {
+  .pfm-v21-pdf-page {
+    background:
+      radial-gradient(circle at 86% 12%, rgba(214, 167, 70, .055), transparent 42mm),
+      linear-gradient(135deg, rgba(255,253,248,.98), rgba(255,250,243,.96)) !important;
+  }
+  .pfm-v21-pdf-page::before {
+    content: '';
+    position: absolute;
+    inset: 12mm 10mm auto auto;
+    width: 60mm;
+    height: 60mm;
+    border: 1px solid rgba(214,167,70,.10);
+    border-radius: 50%;
+    background:
+      linear-gradient(60deg, transparent 49%, rgba(214,167,70,.08) 50%, transparent 51%),
+      linear-gradient(120deg, transparent 49%, rgba(214,167,70,.08) 50%, transparent 51%);
+    opacity: .55;
+    z-index: 0;
+  }
+  .pfm-v21-pdf-page.is-cover {
+    padding: 0 !important;
+    background:
+      radial-gradient(circle at 80% 20%, rgba(214,167,70,.20), transparent 44mm),
+      linear-gradient(135deg, #3a0610 0%, #7d1021 46%, #fff8ed 46.2%, #fffdf8 100%) !important;
+  }
+  .pfm-v21-pdf-page.is-cover::before {
+    inset: 22mm 18mm auto auto;
+    width: 92mm;
+    height: 92mm;
+    border: 1px solid rgba(214,167,70,.22);
+    opacity: .8;
+  }
+  .pfm-v21-pdf-page.is-cover::after {
+    content: 'PFM' !important;
+    right: 12mm !important;
+    bottom: 20mm !important;
+    font-size: 86pt !important;
+    color: rgba(122, 16, 32, .055) !important;
+  }
+  .pfm-v22-pdf-cover-mark {
+    position: absolute;
+    left: 20mm;
+    top: 20mm;
+    width: 20mm;
+    height: 20mm;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(214,167,70,.55);
+    border-radius: 5mm;
+    color: #f4d36c;
+    font-size: 15pt;
+    font-weight: 950;
+    background: rgba(255,255,255,.08);
+  }
+  .pfm-v21-pdf-page.is-cover .pfm-v21-pdf-brand {
+    position: absolute;
+    left: 20mm;
+    top: 46mm;
+    color: #f4d36c !important;
+    font-size: 11pt !important;
+  }
+  .pfm-v22-pdf-cover-kicker {
+    position: absolute;
+    left: 20mm;
+    top: 56mm;
+    color: rgba(255,255,255,.76) !important;
+    font-size: 9pt !important;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  .pfm-v21-pdf-page.is-cover h1 {
+    position: absolute;
+    left: 20mm;
+    top: 74mm;
+    margin: 0 !important;
+    color: #fff !important;
+    font-size: 30pt !important;
+    line-height: 1.28 !important;
+    letter-spacing: .02em;
+  }
+  .pfm-v22-pdf-cover-line {
+    position: absolute;
+    left: 20mm;
+    top: 125mm;
+    width: 78mm;
+    height: .8mm;
+    background: linear-gradient(90deg, #f4d36c, rgba(244,211,108,0));
+  }
+  .pfm-v21-pdf-page.is-cover .pfm-v21-pdf-cover-box {
+    position: absolute;
+    right: 20mm;
+    bottom: 38mm;
+    width: 104mm !important;
+    padding: 9mm 11mm !important;
+    background: rgba(255,253,248,.94) !important;
+    box-shadow: 0 10mm 22mm rgba(59,8,15,.12);
+  }
+  .pfm-v21-pdf-page.is-cover footer {
+    left: 20mm !important;
+    bottom: 14mm !important;
+    color: rgba(255,255,255,.72) !important;
+  }
+  .pfm-v22-pdf-radar-layout { margin-bottom: 10mm !important; }
+  .pfm-v21-pdf-page:nth-of-type(10) .pfm-v21-pdf-insight { margin-top: 6mm !important; }
+  .pfm-v21-pdf-page:nth-of-type(11) .pfm-v21-pdf-final { margin-top: 8mm !important; margin-bottom: 10mm !important; }
+  .pfm-v22-pdf-confidence { margin-top: 9mm !important; }
+}
